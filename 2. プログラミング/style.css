@@ -215,6 +215,7 @@
   .date-table-header {
     display: flex;
     justify-content: space-between;
+    height: calc(100% / 7);
     width: 100%;
     margin-top: 8px;
   }
@@ -225,8 +226,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 40px;
-    height: 40px;
+    width: calc(100% / 7);
+    /* height: 40px; */
 
     font-weight: 700;
 
@@ -245,7 +246,7 @@
   /* Date Styling */
   .date-table-row {
     display: flex;
-    height: calc((100% - 30px) / 7);
+    height: calc((100%) / 6);
     justify-content: space-between;
   }
 
@@ -436,4 +437,19 @@
     position: absolute;
     top:50%;
     transform: translateY(-50%);
+  }
+
+  .date-table-body {
+    display: flex;
+    flex-direction: column;
+    height: calc((100% * 6) / 7);
+  }
+  .calendar-body {
+    height: calc(100% - 40px);
+    width: 100%;
+  }
+  
+  .date-table {
+    height: 100%;
+    width: 100%;
   }

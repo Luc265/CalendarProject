@@ -298,6 +298,7 @@ function drawTable(calendar){
               //toolFullDate = (クリックされた日) -  1
               toolFullDate.setMonth(clickFullDate.getMonth());
               toolFullDate.setFullYear(clickFullDate.getFullYear());
+              
               toolBars.forEach(toolBar =>{
                 checkRadioEvent(toolBar, calendar);
               })
@@ -516,6 +517,7 @@ window.onload = function()
   const sidebar = document.querySelector(".calendar-sidebar");
   const section = document.querySelector(".dual-calendar");
   toolSelect(toolBars, section);
+  eventClickButton();
   var offset_width = sidebar.offsetWidth + section.offsetWidth;
   const calendar_footer = document.querySelector(".calendar-footer");
   calendar_footer.style.width = offset_width.toString() + "px";
@@ -548,11 +550,13 @@ function checkRadioEvent(toolBar, calendar){
     if(checkmode == "Selected Mode"){
       checkDoubleClick = toolBar.value;
       if(toolBar.value === 'Yesterday'){
-        clickFullDate.setDate(clickFullDate.getDate()-1)
-        toolFullDate.setDate(clickFullDate.getDate());
+        clickFullDate.setDate(clickFullDate.getDate()-1);
+        toolFullDate = clickFullDate;
       }
       if(toolBar.value === 'rad_weekBefore'){
-        clickFullDate.setDate(clickFullDate.getDate()-1)
+        clickFullDate.setDate(clickFullDate.getDate()-1);
+        toolFullDate.setMonth(clickFullDate.getMonth());
+        toolFullDate.setFullYear(clickFullDate.getFullYear());
         toolFullDate.setDate(clickFullDate.getDate()-6);        
       }
       if(toolBar.value === 'rad_weekSelect'){
@@ -560,9 +564,10 @@ function checkRadioEvent(toolBar, calendar){
         toolFullDate.setDate(clickFullDate.getDate() - date_day);
         clickFullDate.setDate(clickFullDate.getDate() + 6 - date_day);   
       }
-      if(toolBar.value === 'rad_monthBefore'){
-        
+      if(toolBar.value === 'rad_monthBefore'){        
         clickFullDate.setDate(clickFullDate.getDate() - 1);
+        toolFullDate.setMonth(clickFullDate.getMonth());
+        toolFullDate.setFullYear(clickFullDate.getFullYear());
         toolFullDate.setDate(1);
       }
       if(toolBar.value === 'rad_monthSelect'){
@@ -575,6 +580,18 @@ function checkRadioEvent(toolBar, calendar){
     }      
   } 
 }
+
+function eventClickButton(){
+  const btnOK = document.querySelector(".btn_OK");
+  const btnReturn = document.querySelector(".btn_Return");
+  btnOK.addEventListener("click", function(e){
+    alert('OK ボタンが押す');
+  })
+  btnReturn.addEventListener("click", function(e){
+    alert('Return ボタンが押す');
+  })
+}
+
 
 
 function Zeller(D, M, Y){    
