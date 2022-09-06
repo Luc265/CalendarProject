@@ -278,6 +278,7 @@ function drawTable(calendar){
 
                 highlightCellRange(currFullDate, calendar.closest(".dual-calendar"));
                 cell.classList.add("in-range");
+              
               }            
             }) 
           } 

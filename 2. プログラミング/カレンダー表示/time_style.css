@@ -1,0 +1,111 @@
+div.ruler-main-content{
+  position: relative;
+  display: flex;
+  width: 900px;
+  height: 150px;
+  /* background-color: antiquewhite; */
+}
+
+div.ruler-main-content div.time-unit {
+  position: relative;
+  width: calc(100% / 10);
+  height: 100%;
+}
+
+.text-hide {
+  display: none;
+}
+
+.text-display {
+  display: block;
+}
+.text-select{
+  color: aqua;
+}
+
+.text-non-select{
+  color: gray;
+}
+
+div.ruler-main-content div.time-unit .text-top-containt{
+  position: absolute;
+  width: auto;
+  height: 20px;
+  top:0;
+  text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+  /* background-color: aqua; */
+}
+
+div.ruler-main-content div.time-unit .text-bottom-containt{
+  position: absolute;
+  width: auto;
+  height: 20px;
+  bottom:-20px;
+  text-align: center;
+  /* transform: rotate(-45deg); */
+  left: 50%;
+  transform: translateX(-50%) rotate(-45deg);
+  font-size: 15px;
+  /* background-color: aqua; */
+}
+
+div.ruler-main-content div.time-unit .verical-line-containt{
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+  margin-top: 20px;
+  /* background-color:bisque; */
+}
+
+div.ruler-main-content div.time-unit .verical-line-containt .line{
+  position: absolute; 
+  /* width: 1px; */
+  /* height: 100%; */
+  left: 50%;
+  transform: translateX(-50%);
+ 
+} 
+
+.hour-line {
+  width: 3px;
+  height: 100%;
+}
+
+.minute-line {
+  height: 75%;
+  width: 1px;
+}
+
+.line-select{
+  background-color: aqua;
+}
+
+.line-non-select{
+  background-color: gray;
+}
+
+.line-hover-select {
+  background-color: black;
+}
+
+.line-hover-non-select {
+  background-color: black;
+}
+
+
+div.horizol-line {
+  position: absolute;
+  bottom: 50px;
+  height: 1px;
+  width: 100%;
+  z-index: 3;
+  background-color: gray;
+}
+.body_time {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
