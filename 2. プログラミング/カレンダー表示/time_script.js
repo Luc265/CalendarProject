@@ -10,6 +10,7 @@ function drawTime(){
             <div class="line hour-line line-non-select">
   
             </div>
+            <div class="background non-select"></div>
         </div>
         <div class="text-bottom-containt">${i}:00</div>
         </div>   
@@ -19,6 +20,7 @@ function drawTime(){
                 <div class="line minute-line line-non-select">
     
                 </div>
+                <div class="background select"></div>
             </div>
             <div class="text-bottom-containt text-hide">${i}:30</div>
         </div>`
