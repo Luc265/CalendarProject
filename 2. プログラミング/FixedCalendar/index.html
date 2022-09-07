@@ -1,0 +1,176 @@
+<!-- Hoang: auto format code: Shift + Alt + F -->
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+    integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="lib/jquery-3.6.0.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="time_style.css">
+</head>
+
+<div class="calendar-content calendar-show">
+  <div class="calendar-section">
+    <div class="calendar-sidebar">
+      <p><b>Automatically renews</b></p>
+      <br>
+      <!-- Hoang: fav_language? khong can thi bo di hoac dat ten cho hop li -->
+      <input class="radio" type="radio" id="rad_yesterday" name="fav_language" value="Yesterday">
+      <label for="rad_yesterday">Yesterday</label>
+      <br>
+      <!-- /* Hoang: Add responsive */ -->
+      <br>
+      <input class="radio" type="radio" id="rad_weekBefore" name="fav_language" value="rad_weekBefore">
+      <label for="rad_weekBefore">1 week until the day before</label>
+      <br>
+      <!-- /* Hoang: Add responsive */ -->
+      <br>
+      <input class="radio" type="radio" id="rad_weekSelect" name="fav_language" value="rad_weekSelect">
+      <label for="rad_weekSelect">1 week including selection date</label>
+      <br>
+      <!-- /* Hoang: Add responsive */ -->
+      <br>
+      <input class="radio" type="radio" id="rad_monthBefore" name="fav_language" value="rad_monthBefore">
+      <label for="rad_monthBefore">Month until the day before</label>
+      <br>
+      <!-- /* Hoang: Add responsive */ -->
+      <br>
+      <input class="radio" type="radio" id="rad_monthSelect" name="fav_language" value="rad_monthSelect">
+      <label for="rad_monthSelect">Month including selection date</label>
+      <br>
+    </div>
+    <!-- Hoang: inputs dat ten cho co y nghia -->
+    <div class="inputs">
+      <!-- <div class="type1"> -->
+      <!-- Hoang: fields khong co y nghia, bo di cung dc -->
+      <div class="fields">
+        <div id="id_startCalendar" class="calendar-widget default-today" data-next="#id_deadlineCalendar"
+          date-min="today" tabindex="-1">
+          <div class="input-wrapper">
+            <div class="date-field"></div>
+          </div>
+          <div class="calendar-wrapper" style="display: block;">
+            <div class="year">
+              <p>2012</p>
+            </div>
+            <div class="dual-calendar">
+              <div class="calendar">
+                <div class="calendar-header">
+                  <div class="prev-btn move-btn-medium">
+                    <i class="material-icons">keyboard_arrow_left</i>
+                  </div>
+
+                  <div class="month-text">
+                    <p>September 2018</p>
+                  </div>
+                </div>
+                <div class="calendar-body">
+                  <div class="date-table">
+                    <div class="date-table-header">
+                      <div class="day sunday">S</div>
+                      <div class="day">M</div>
+                      <div class="day">T</div>
+                      <div class="day">W</div>
+                      <div class="day">T</div>
+                      <div class="day">F</div>
+                      <div class="day saturday">S</div>
+                    </div>
+                    <div class="date-table-body">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="calendar plus-one">
+                <div class="calendar-header">
+                  <div class="month-text">
+                    <p>September 2018</p>
+                  </div>
+
+                  <div class="next-btn move-btn-medium">
+                    <i class="material-icons">keyboard_arrow_right</i>
+                  </div>
+                </div>
+                <div class="calendar-body">
+                  <div class="date-table">
+                    <div class="date-table-header">
+                      <div class="day sunday">S</div>
+                      <div class="day">M</div>
+                      <div class="day">T</div>
+                      <div class="day">W</div>
+                      <div class="day">T</div>
+                      <div class="day">F</div>
+                      <div class="day saturday">S</div>
+                    </div>
+                    <div class="date-table-body">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="calendar-footer">
+    <div class="warning">
+      <i class='bx bx-info-circle'></i>
+      <span>指定する日にちの範囲を選択してください。</span>
+    </div>
+    <div class="calendar_button">
+      <button class="btn_Cancel">Cancel</button>
+      <button class="btn_OK">OK</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 時間表示 -->
+<div class="time-content timechart-hide">
+  <div class="time-section">
+      <div class="time-main-content">
+          <div class="horizol-line">
+          </div>
+          <div class="body_time">
+          </div>
+      </div>
+  </div>      
+
+  <div class="calendar-footer">
+      <div class="warning">
+          <i class='bx bx-info-circle'></i>
+          <span>指定する日にちの範囲を選択してください。</span>
+      </div>
+      <div class="calendar_button">
+          <button class="time_btn_Return">Return</button>
+          <button class="time_btn_OK">OK</button>
+      </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="time_script.js"></script>
+
+<script type="module">
+  // import firstLoad from "./time_script"
+  const btnOK = document.querySelector(".btn_OK");
+  const btnReturn = document.querySelector(".btn_Cancel");
+  btnOK.addEventListener("click", function (e) {
+    alert('OK ボタンが押す');
+  })
+  btnReturn.addEventListener("click", function (e) {
+    alert('Cancle ボタンが押す');
+    calendarContent.classList.remove("calendar-show");
+    calendarContent.classList.add("calendar-hide");
+    timeContent.classList.remove("timechart-hide");
+    timeContent.classList.remove("timechart-show");
+    firstLoad();
+  })
+</script>
