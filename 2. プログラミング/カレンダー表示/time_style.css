@@ -1,12 +1,11 @@
-div.ruler-main-content{
+div.time-main-content{
   position: relative;
   display: flex;
   width: 900px;
   height: 150px;
-  /* background-color: antiquewhite; */
 }
 
-div.ruler-main-content div.time-unit {
+div.time-main-content div.time-unit {
   position: relative;
   width: calc(100% / 10);
   height: 100%;
@@ -20,14 +19,14 @@ div.ruler-main-content div.time-unit {
   display: block;
 }
 .text-select{
-  color: aqua;
+  color: blue;
 }
 
 .text-non-select{
   color: gray;
 }
 
-div.ruler-main-content div.time-unit .text-top-containt{
+div.time-main-content div.time-unit .text-top-containt{
   position: absolute;
   width: auto;
   height: 20px;
@@ -38,7 +37,7 @@ div.ruler-main-content div.time-unit .text-top-containt{
   /* background-color: aqua; */
 }
 
-div.ruler-main-content div.time-unit .text-bottom-containt{
+div.time-main-content div.time-unit .text-bottom-containt{
   position: absolute;
   width: auto;
   height: 20px;
@@ -47,28 +46,29 @@ div.ruler-main-content div.time-unit .text-bottom-containt{
   /* transform: rotate(-45deg); */
   left: 50%;
   transform: translateX(-50%) rotate(-45deg);
-  font-size: 15px;
+  font-size: 80%;
   /* background-color: aqua; */
 }
 
-div.ruler-main-content div.time-unit .background {
+div.time-main-content div.time-unit .background {
   position: absolute;
   z-index: -1;
   background-color: aqua;
-  height: 75%;
+  opacity: 20%;
+  height: 72%;
   width: 100%;
   left: 50%;
 } 
 
-div.ruler-main-content div.time-unit .select {
+div.time-main-content div.time-unit .select {
   display: block;
 }
 
-div.ruler-main-content div.time-unit .non-select {
+div.time-main-content div.time-unit .non-select {
   display: none;
 }
 
-div.ruler-main-content div.time-unit .verical-line-containt{
+div.time-main-content div.time-unit .verical-line-containt{
   position: relative;
   width: 100%;
   height: calc(100% - 40px);
@@ -76,7 +76,7 @@ div.ruler-main-content div.time-unit .verical-line-containt{
   /* background-color:bisque; */
 }
 
-div.ruler-main-content div.time-unit .verical-line-containt .line{
+div.time-main-content div.time-unit .verical-line-containt .line{
   position: absolute; 
   /* width: 1px; */
   /* height: 100%; */
@@ -91,12 +91,12 @@ div.ruler-main-content div.time-unit .verical-line-containt .line{
 }
 
 .minute-line {
-  height: 75%;
+  height: 72%;
   width: 1px;
 }
 
 .line-select{
-  background-color: aqua;
+  background-color: blue;
 }
 
 .line-non-select{
