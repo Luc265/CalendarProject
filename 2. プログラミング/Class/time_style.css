@@ -1,0 +1,194 @@
+div.time-main-content{
+  top: 20%;
+  position: relative;
+  /* display: flex; */
+  width: 80%;
+  height: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.timechart-hide {
+  display: none;
+}
+
+.timechart-show {
+  display: flex;
+}
+
+div.time-main-content div.time-unit {
+  position: relative;
+  width: calc(100% / 10);
+  height: 100%;
+}
+
+.text-hide {
+  display: none;
+}
+
+.text-display {
+  display: block;
+}
+.text-select{
+  color: blue;
+}
+
+.text-non-select{
+  color: gray;
+}
+
+div.time-main-content div.time-unit .text-top-containt{
+  position: absolute;
+  width: auto;
+  height: 20px;
+  top:0;
+  text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+  /* background-color: aqua; */
+}
+
+div.time-main-content div.time-unit .text-bottom-containt{
+  position: absolute;
+  width: auto;
+  height: 20px;
+  bottom:-20px;
+  text-align: center;
+  /* transform: rotate(-45deg); */
+  left: 50%;
+  transform: translateX(-50%) rotate(-45deg);
+  font-size: 80%;
+  /* background-color: aqua; */
+}
+
+div.time-main-content div.time-unit .background {
+  position: absolute;
+  z-index: -1;
+  background-color: aqua;
+  opacity: 20%;
+  height: 72%;
+  width: 100%;
+  left: 50%;
+} 
+
+div.time-main-content div.time-unit .select {
+  display: block;
+}
+
+div.time-main-content div.time-unit .non-select {
+  display: none;
+}
+
+div.time-main-content div.time-unit .verical-line-containt{
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+  margin-top: 20px;
+  /* background-color:bisque; */
+}
+
+div.time-main-content div.time-unit .verical-line-containt .line{
+  position: absolute; 
+  /* width: 1px; */
+  /* height: 100%; */
+  left: 50%;
+  transform: translateX(-50%);
+ 
+} 
+
+.hour-line {
+  width: 3px;
+  height: 100%;
+}
+
+.minute-line {
+  height: 72%;
+  width: 1px;
+}
+
+.line-select{
+  background-color: blue;
+}
+
+.line-non-select{
+  background-color: gray;
+}
+
+.line-hover-select {
+  background-color: black;
+}
+
+.line-hover-non-select {
+  background-color: black;
+}
+
+
+div.horizol-line {
+  position: absolute;
+  bottom: 50px;
+  height: 1px;
+  width: 100%;
+  z-index: 1;
+  background-color: gray;
+}
+.body_time {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.calendar-footer{
+  bottom: 0px;
+  width: 100%;
+  height: 60px;
+  background-color: white;
+  /* border: 2px solid gray; */
+  position: relative;
+  display: flex;
+  padding: 5px;
+}
+
+.time-content{
+  left: 150px;
+  width: 900px;
+  height: 350px;
+  transition: all 2s ease;
+}
+
+.time-section{
+  display: flex;
+  width: 100%;
+  height: calc(100% - 60px);
+  background-color: white;
+  /* border: 2px solid gray; */
+
+}
+
+.time_btn_OK {
+  position: absolute;
+  display: inline-block;
+  right: 160px;
+  width: 60px;
+  height: 30px;
+  border: 0px;
+  background-color: white;
+  /* Hoang: Add responsive */
+  transform: translateY(-50%);
+  top:50%;
+  font-size: 90%;
+}
+
+.time_btn_Return {
+  position: absolute;
+  display: inline-block;
+  right: 50px;
+  width: 60px;
+  height: 30px;
+  border: 0px;
+  background-color: white;
+  /* Hoang: Add responsive */
+  transform: translateY(-50%);
+  top:50%;
+  font-size: 90%;
+}

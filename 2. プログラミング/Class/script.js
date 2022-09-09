@@ -1,0 +1,1035 @@
+ function calendarComponent(name, width, height, attackTimeChart, OkCallback, returnCallback) {
+  this.name = name;
+  this.width = width;
+  this.height = height;
+  this.attackTimeChart = attackTimeChart;
+
+  // -Output------------------------
+  this.startDate = new Date(0, 0, 0, 0);
+  this.endDate = new Date(0, 0, 0, 0);
+  this.startTime = "";
+  this.endTime = "";
+  this.OkCallback = OkCallback;
+  this.returnCallback = returnCallback;
+  // -Output------------------------
+
+  this.refresh = function () {
+    this.reset();
+  }
+
+  this.addLib = function () {
+    document.head.innerHTML += `<link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+                                <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+                                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">`
+  }
+  this.addHtml = function () {
+    var htmlContent = "";
+    const mes1 = "指定する日にちの範囲を選択してください。";
+    const mes2 = "指定する日にちの範囲を選択してください。";
+    htmlContent += `<div class="calendar-content calendar-show">
+      <div class="calendar-section">
+        <div class="calendar-sidebar">
+          <p><b>Automatically renews</b></p>
+          <br>
+          <input class="radio" type="radio" id="rad_yesterday" name="mode_calendar" value="Yesterday">
+          <label for="rad_yesterday">Yesterday</label>
+          <br>
+    
+          <br>
+          <input class="radio" type="radio" id="rad_weekBefore" name="mode_calendar" value="rad_weekBefore">
+          <label for="rad_weekBefore">1 week until the day before</label>
+          <br>
+    
+          <br>
+          <input class="radio" type="radio" id="rad_weekSelect" name="mode_calendar" value="rad_weekSelect">
+          <label for="rad_weekSelect">1 week including selection date</label>
+          <br>
+    
+          <br>
+          <input class="radio" type="radio" id="rad_monthBefore" name="mode_calendar" value="rad_monthBefore">
+          <label for="rad_monthBefore">Month until the day before</label>
+          <br>
+    
+          <br>
+          <input class="radio" type="radio" id="rad_monthSelect" name="mode_calendar" value="rad_monthSelect">
+          <label for="rad_monthSelect">Month including selection date</label>
+          <br>
+        </div>
+    
+        <div class="calendar-Date">
+          <div id="id_startCalendar" class="calendar-widget default-today" data-next="#id_deadlineCalendar" date-min="today"
+            tabindex="-1">
+            <div class="input-wrapper">
+              <div class="date-field"></div>
+            </div>
+            <div class="calendar-wrapper" style="display: block;">
+              <div class="tabYear">
+                <div class="leftYear year-hide">
+                  <p>2012</p>
+                </div>
+                <div class="centerYear year-show">
+                  <p>2012</p>
+                </div>
+                <div class="rightYear year-hide">
+                  <p>2012</p>
+                </div>
+              </div>
+              <div class="dual-calendar">
+                <div class="calendar">
+                  <div class="calendar-header">
+                    <div class="prev-btn move-btn-medium">
+                      <i class="material-icons">keyboard_arrow_left</i>
+                    </div>
+    
+                    <div class="month-text">
+                      <p>September 2018</p>
+                    </div>
+                    <div class="month">
+                      <p>September 2018</p>
+                    </div>
+                  </div>
+                  <div class="calendar-body">
+                    <div class="date-table">
+                      <div class="date-table-header">
+                        <div class="day sunday">S</div>
+                        <div class="day">M</div>
+                        <div class="day">T</div>
+                        <div class="day">W</div>
+                        <div class="day">T</div>
+                        <div class="day">F</div>
+                        <div class="day saturday">S</div>
+                      </div>
+                      <div class="date-table-body">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="calendar plus-one">
+                  <div class="calendar-header">
+                    <div class="month-text">
+                      <p>September 2018</p>
+                    </div>
+                    <div class="month">
+                      <p>September 2018</p>
+                    </div>
+    
+                    <div class="next-btn move-btn-medium">
+                      <i class="material-icons">keyboard_arrow_right</i>
+                    </div>
+                  </div>
+                  <div class="calendar-body">
+                    <div class="date-table">
+                      <div class="date-table-header">
+                        <div class="day sunday">S</div>
+                        <div class="day">M</div>
+                        <div class="day">T</div>
+                        <div class="day">W</div>
+                        <div class="day">T</div>
+                        <div class="day">F</div>
+                        <div class="day saturday">S</div>
+                      </div>
+                      <div class="date-table-body">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="calendar-footer">
+        <div class="warning">
+          <i class='bx bx-info-circle'></i>
+          <span>${mes1}</span>
+        </div>
+        <div class="calendar_button">
+          <button class="btn_Next">Return</button>
+          <button class="btn_OK">OK</button>
+        </div>
+      </div>
+    
+    </div>`
+    if (this.attackTimeChart == true) {
+      htmlContent += `<!-- 時間表示 -->
+        <div class="time-content timechart-hide">
+          <div class="time-section">
+            <div class="time-main-content">
+              <div class="horizol-line">
+              </div>
+              <div class="body_time">
+              </div>
+            </div>
+          </div>
+        
+          <div class="calendar-footer">
+            <div class="warning">
+              <i class='bx bx-info-circle'></i>
+              <span>${mes2}</span>
+            </div>
+            <div class="calendar_button">
+              <button class="time_btn_Return">Return</button>
+              <button class="time_btn_OK">OK</button>
+            </div>
+        
+          </div>
+        </div>`
+    }
+
+    const container = document.getElementById(this.name);
+    console.log(container);
+    // console.log(htmlContent);
+    container.innerHTML = htmlContent;
+    // centerYear.style.width = offset_width.toString() + "%";
+    const calendarContent = document.querySelector(".calendar-content");
+    calendarContent.style.width = this.width + "px";
+    calendarContent.style.height = this.height + "px";
+    if (this.attackTimeChart == true) {
+      const timeContent = document.querySelector(".time-content");
+      timeContent.style.width = this.width + "px";
+      timeContent.style.height = this.height + "px";
+    }
+  }
+  this.start = function () {
+    var calendarComponent = this;
+
+    // add library
+    this.addLib();
+    // init UI
+    this.addHtml();
+    // add timeChart
+    if (this.attackTimeChart == true) {
+      var timeChart = new timeChartComponent(this)
+      this.timeChart = timeChart;
+      this.timeChart.start();
+      this.timeChart.reLoad();
+    }
+
+    function updateOutputDate(_startDate, _endDate) {
+      calendarComponent.startDate = new Date(_startDate.toString());
+      calendarComponent.endDate = new Date(_endDate.toString());
+    }
+
+    // Time variable queries.
+    let today = new Date()
+    // All the date should be a NUMBER type!!
+
+    // Variable for storing the selected date data.
+    let selDate, selMonth, selYear;
+
+    const firstDate = new Date(0, 0, 0, 0);
+    firstDate.setHours(0, 0, 0, 0);
+
+    let date_startPoint = new Date(0, 0, 0, 0);
+    date_startPoint.setHours(0, 0, 0, 0);
+    let date_endPoint = new Date(0, 0, 0, 0);
+    date_endPoint.setHours(0, 0, 0, 0);
+
+    var mouseClick = false;
+
+    const _mode = {
+      NormalMode: "Normal Mode",
+      SelectMode: "Selected Mode"
+    }
+    let checkmode = _mode.NormalMode;
+
+    // To store the date today.
+    // Variables with "curr" represents the current displayed data.
+    let currYear = thisYear = today.getFullYear();
+    let currMonth = thisMonth = new Month(today.getMonth());
+    let currDate = today.getDate();
+    let startDay = new Date(thisMonth.index, thisYear, 1).getDay()
+
+    // Element queries
+    const calendarWidgets = document.querySelectorAll(".calendar-widget");
+    let toolBars = document.querySelectorAll(".radio");
+    const calendarContent = document.querySelector(".calendar-content");
+    // const timeContent = document.querySelector(".time-content");
+
+    this.reset = function () {
+      date_startPoint = new Date(0, 0, 0, 0);
+      date_startPoint.setHours(0, 0, 0, 0);
+      date_endPoint = new Date(0, 0, 0, 0);
+      date_endPoint.setHours(0, 0, 0, 0);
+      clearSelCell();
+      if(calendarComponent.attackTimeChart == true){
+        calendarComponent.timeChart.refresh();
+      }     
+    }
+
+
+    // ==================================================================
+    // _________________________ OBJECTS ________________________________
+    // ==================================================================
+    function Month(index) {
+      const shortNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+      const longNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+      const numberofDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+      if (currYear % 4 === 0) {
+        numberofDays[1] = 29;
+      }
+
+      index = index > 11 ? 0 : index;
+      index = index < 0 ? 11 : index;
+
+      this.index = index;
+      this.shortName = shortNames[index];
+      this.longName = longNames[index];
+      this.length = numberofDays[index];
+    }
+
+    // =======================================
+    // _____________ FUNCTIONS _______________
+    // =======================================
+
+    function getMonthIndex(name) {
+      const shortMonthTable = {
+        "jan": 0,
+        "feb": 1,
+        "mar": 2,
+        "apr": 3,
+        "may": 4,
+        "june": 5,
+        "july": 6,
+        "aug": 7,
+        "sept": 8,
+        "oct": 9,
+        "nov": 10,
+        "dec": 11
+      };
+
+      const longMonthTable = {
+        "january": 0,
+        "february": 1,
+        "march": 2,
+        "april": 3,
+        "may": 4,
+        "june": 5,
+        "july": 6,
+        "august": 7,
+        "september": 8,
+        "october": 9,
+        "november": 10,
+        "december": 11
+      };
+      name = name.toLowerCase();
+      let index = shortMonthTable[name];
+      if (index === undefined) {
+        index = longMonthTable[name];
+      };
+      return index;
+    }
+
+    function getStartDay(year, month) {
+      const startDay = new Date(year, month.index, 1).getDay()
+      return startDay
+    }
+
+    function updateSelData(dateField) {
+      let fullDate = dateField.value.split(" ");
+      let selData = [];
+      if (fullDate !== "") {
+        selDate = Number(fullDate[0]);
+        selMonth = new Month(getMonthIndex(fullDate[1]));
+        selYear = Number(fullDate[2]);
+        selData = [selDate, selMonth, selYear];
+      }
+
+      return selData;
+    }
+
+    // Cell UI Animation
+    function clearSelCell() {
+      // For single calendar, input the div with calendar class as the arguments, for dual calendar, input the div with "dual-calendar" class as arguments.
+      const cells = document.querySelectorAll(".date");
+      cells.forEach(cell => {
+        cell.classList.remove("in-range");
+      })
+    }
+
+    function highlightCellRange(currFullDate, calendar) {
+      const cells = calendar.querySelectorAll(".date");
+
+      clearSelCell();
+
+      cells.forEach(cell => {
+        let cellFullDate, _cellYear, cellYear, cellMonth, cellDate;
+
+        if (!(cell.classList.contains("empty") || cell.classList.contains("disabled"))) {
+          cellFullDate = cell.closest(".calendar").querySelector(".month-text p").textContent.split(" ");
+          cellYear = cellFullDate[1];
+          cellMonth = cellFullDate[0];
+          cellDate = Number(cell.querySelector(".date-text").textContent);
+          cellFullDate = new Date(`${cellDate} ${cellMonth} ${cellYear}`);
+
+          if ((cellFullDate <= date_startPoint && cellFullDate >= currFullDate) || (cellFullDate >= date_startPoint && cellFullDate <= currFullDate)) {
+            cell.classList.add("in-range");
+          }
+        }
+      })
+    }
+
+    function drawTable(calendar) {
+      let month = currMonth;
+      let year = currYear;
+
+      if (calendar.classList.contains("plus-one")) {
+        monthIndex = currMonth.index + 1;
+        month = new Month(monthIndex);
+        leftYear = document.querySelector(".leftYear");
+        rightYear = document.querySelector(".rightYear");
+        centerYear = document.querySelector(".centerYear");
+        if (monthIndex > 11) {
+          year++;
+          leftYearText = document.querySelector(".leftYear p");
+          rightYearText = document.querySelector(".rightYear p");
+          leftYearText.textContent = `${year - 1}`;
+          rightYearText.textContent = `${year}`;
+
+          leftYear.classList.remove("year-hide");
+          leftYear.classList.add("year-show");
+          rightYear.classList.remove("year-hide");
+          rightYear.classList.add("year-show");
+          centerYear.classList.remove("year-show");
+          centerYear.classList.add("year-hide");
+        } else {
+          var offset_width = 100;
+          centerYear.style.width = offset_width.toString() + "%";
+
+          leftYear.classList.remove("year-show");
+          leftYear.classList.add("year-hide");
+          rightYear.classList.remove("year-show");
+          rightYear.classList.add("year-hide");
+          centerYear.classList.remove("year-hide");
+          centerYear.classList.add("year-show");
+        }
+      }
+
+      const widget = calendar.closest(".calendar-widget");
+      // Change Table Month Name
+      const monthText = calendar.querySelector(".month-text p");
+      const monthCalendar = calendar.querySelector(".month p");
+      const calendarWrapper2 = widget.querySelector(".calendar-wrapper");
+      const yearText = calendarWrapper2.querySelector(".centerYear p")
+      monthText.textContent = `${month.longName} ${year}`
+      monthCalendar.textContent = `${month.longName}`
+      yearText.textContent = `${year}`
+
+      // Defining variables to create the date table
+      let monthDays = month.length;
+      let start = getStartDay(year, month);
+      let count = 1 - start;
+
+      const tableBody = calendar.querySelector(".date-table-body");
+      var rowCount = 0;
+
+      while (rowCount < 6) {
+        let row = document.createElement("div"); // Create date rows
+        row.setAttribute("class", "date-table-row");
+
+        let dayCount = 0; // variable to keep track of the day (e.g. Monday, Tuesday, ... Sunday)
+
+        // Date cell creation
+        for (i = 0; i < 7; i++) {
+          let cell = document.createElement("div");
+          cell.setAttribute("class", "date");
+
+          if (count < 1) {
+            cell.classList.add("empty");
+          } else if (count > monthDays) {
+            cell.classList.add("empty");
+          } else {
+            let cellRipple = document.createElement("div"); // Ripple effect, not important
+            let helpText = document.createElement("p"); // Originally intended to show the today's date. Removed.
+            let cellText = document.createElement("p"); // The number inside each date cell
+
+            cellRipple.setAttribute("class", "date-ripple");
+            cellText.setAttribute("class", "date-text");
+            helpText.setAttribute("class", "help-text");
+
+            cellText.textContent = count; // Output the current date
+            //settings style of Sunday in Week
+            if (dayCount === 0) {
+              cell.classList.add("sunday");
+            }
+            //settings style of Today 
+            if (dayCount === 6) {
+              cell.classList.add("today");
+            }
+
+            cell.appendChild(cellRipple);
+            cell.appendChild(helpText);
+            cell.appendChild(cellText);
+
+            if (!(cell.classList.contains("disabled") || cell.classList.contains("empty"))) {
+              if (true) {
+                cell.addEventListener("mouseenter", function () {
+                  if (mouseClick === true && checkmode == _mode.NormalMode) {
+                    let currFullDate = cell.closest(".calendar").querySelector(".month-text p").textContent.split(" ");
+                    const currYear = currFullDate[1];
+                    const currMonth = currFullDate[0];
+                    const currDate = Number(cell.querySelector(".date-text").textContent);
+                    currFullDate = new Date(`${currDate} ${currMonth} ${currYear}`);
+                    highlightCellRange(currFullDate, calendar.closest(".dual-calendar"));
+                    cell.classList.add("in-range");
+                  }
+                })
+              }
+
+              cell.addEventListener("click", function (e) {
+                let currFullDate = cell.closest(".calendar").querySelector(".month-text p").textContent.split(" ");
+                const clickYear = currFullDate[1];
+                const clickMonth = cell.closest(".calendar").querySelector(".month-text p").textContent;
+                const clickDate = Number(cell.querySelector(".date-text").textContent);
+                if (calendarComponent.attackTimeChart == true) {
+                  const textButton = document.querySelector(".btn_Next");
+                  textButton.textContent = `Next`;
+                }
+
+                date_endPoint = new Date(date_startPoint.toString());
+
+                date_startPoint = new Date(`${clickDate} ${clickMonth} ${clickYear}`);
+
+                updateOutputDate(date_endPoint, date_startPoint);
+
+                if (mouseClick == false) {
+                  clearSelCell();
+                }
+
+                mouseClick = !mouseClick
+                cell.classList.add("in-range");
+
+                if (checkmode == _mode.SelectMode) {
+                  let yesterdayRadioObj = null;
+                  toolBars.forEach(obj => {
+                    if (obj.value === 'Yesterday') {
+                      yesterdayRadioObj = obj;
+                    }
+                  });
+                  //date_endPoint = (クリックされた日) -  1
+                  if (yesterdayRadioObj.checked == true) {
+                    mouseClick = true;
+                  } else {
+                    toolBars.forEach(toolBar => {
+                      checkModeSelect(toolBar, calendar);
+                    })
+                    updateOutputDate(date_endPoint, date_startPoint);
+                    //選択した日（date_endPointからdate_startPointまで）をマークします
+                    highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
+                    mouseClick = false;
+                  }
+
+                  toolBars.forEach(toolBar => {
+                    toolBar.checked = false;
+                    console.log(toolBar.checked);
+                  })
+                  checkmode = _mode.NormalMode;
+                }
+              })
+            }
+          }
+          row.appendChild(cell);
+          count++;
+          dayCount++;
+        }
+        tableBody.appendChild(row);
+        rowCount++;
+      }
+    }
+
+    function clearTable(calendar) {
+      const tableRows = calendar.querySelectorAll(".date-table-row");
+      if (tableRows.length) {
+        tableRows.forEach(row => {
+          row.remove();
+        })
+      }
+    }
+
+    function toggleCalendar(widget) {
+      const dateField = widget.querySelector(".date-field");
+      const calendarWrapper = widget.querySelector(".calendar-wrapper");
+      const calendars = calendarWrapper.querySelectorAll(".calendar");
+
+      calendarWrapper.style.display = 'block';
+      widget.classList.add("active");
+      widget.setAttribute("data-active", "true");
+      dateField.classList.add("active");
+
+      if (dateField.value !== "") {
+        updateSelData(dateField);
+        currMonth = selMonth;
+        currYear = selYear;
+      }
+
+      calendars.forEach(calendar => {
+        clearTable(calendar);
+        drawTable(calendar);
+      })
+      // Next and Previous Month Buttons Listener
+      const nextBtn = widget.querySelector(".next-btn");
+      const prevBtn = widget.querySelector(".prev-btn");
+
+      nextBtn.addEventListener("click", nextMonth);
+      prevBtn.addEventListener("click", prevMonth);
+      nextBtn.setAttribute("data-has-listener", "true");
+      prevBtn.setAttribute("data-has-listener", "true");
+
+      let minData;
+      return;
+    }
+
+    function changeMonth(e, calendar, direction) {
+      if (e) {
+        console.log(`Next Month called by: ${e.target.tagName}.${e.target.className}`);
+      }
+      let calendars;
+
+      let currMonthIndex;
+      if (direction === "next") {
+        currMonthIndex = currMonth.index + 1;
+        currMonth = new Month(currMonthIndex);
+        currMonthIndex > 11 ? currYear++ : currYear;
+      } else {
+        currMonthIndex = currMonth.index - 1;
+        currMonth = new Month(currMonthIndex);
+        currMonthIndex < 0 ? currYear-- : currYear;
+      }
+
+      if (calendar.classList.contains("dual-calendar")) {
+        calendars = calendar.querySelectorAll(".calendar");
+        calendars.forEach(calendar => {
+          clearTable(calendar);
+          drawTable(calendar);
+        })
+      } else {
+        clearTable(calendar);
+        drawTable(calendar);
+      }
+
+      if (mouseClick == false) {  // cellを選択完了の状態
+
+        if (date_startPoint.toString() !== firstDate.toString()) { //新規状態ではないチェック
+          highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
+        }
+      }
+    }
+
+    function nextMonth(e) {
+      changeMonth(e, e.target.closest(".dual-calendar"), "next");
+    }
+
+    function prevMonth(e) {
+      console.log("previous");
+      changeMonth(e, e.target.closest(".dual-calendar"), "prev");
+    }
+
+    var eventClickButton = function () {
+      const btnOK = document.querySelector(".btn_OK");
+      const btnNext = document.querySelector(".btn_Next");
+      btnOK.addEventListener("click", e => this.OkCallback());
+
+      btnNext.attackTimeChart = this.attackTimeChart;
+      btnNext.returnCallback = this.returnCallback;
+      btnNext.addEventListener("click", function (e) {
+        if (this.attackTimeChart == true) {
+          const textButton = document.querySelector(".btn_Next");
+          if (textButton.textContent == 'Next') {
+            calendarContent.classList.remove("calendar-show");
+            calendarContent.classList.add("calendar-hide");
+            const timeContent = document.querySelector(".time-content");
+            timeContent.classList.remove("timechart-hide");
+            timeContent.classList.remove("timechart-show");
+          } else {
+            // alert('No TimeChart');
+            this.returnCallback();
+          }
+        } else {
+          this.returnCallback();
+        }
+      }, false)
+    }
+    this.eventClickButton = eventClickButton;
+
+    // ==================================================================
+    // ________________________ LISTENERS _______________________________
+    // ==================================================================
+    //duoc tao khi bat dau load man hinh
+    calendarWidgets.forEach(widget => {
+      // If the widget has the "default-today" class, sets its value to today's date.
+      const dateField = widget.querySelector(".date-field");
+
+      if (widget.classList.contains("default-today")) {
+        dateField.readonly = false;
+        dateField.value = `${currDate} ${thisMonth.longName} ${thisYear}`;
+        dateField.readonly = true;
+      }
+
+      toggleCalendar(widget);
+
+      const section = document.querySelector(".dual-calendar");
+      eventModeSelect(toolBars, section);
+      this.eventClickButton();
+      windowResize();
+    });
+
+    function windowResize() {
+      const sidebar = document.querySelector(".calendar-sidebar");
+      const section = document.querySelector(".dual-calendar");
+      var offset_width = sidebar.offsetWidth + section.offsetWidth;
+      // const calendar_footer = document.querySelector(".calendar-footer");
+      // calendar_footer.style.width = offset_width.toString() + "px";
+
+      calendarContentWidth = calendarContent.offsetWidth;
+      calendarContentHeight = calendarContent.offsetHeight;
+      // small
+      if (calendarContentWidth < 700 || calendarContentHeight < 400) {
+        const moveBtns = document.querySelectorAll(".prev-btn,.next-btn");
+        moveBtns.forEach(btn => {
+          btn.classList.remove("move-btn-medium");
+          btn.classList.remove("move-btn-big");
+          btn.classList.add("move-btn-small");
+        })
+      } else {
+        const moveBtns = document.querySelectorAll(".prev-btn,.next-btn");
+        moveBtns.forEach(btn => {
+          btn.classList.remove("move-btn-small");
+          btn.classList.remove("move-btn-big");
+          btn.classList.add("move-btn-medium");
+        })
+      }
+    }
+
+    function eventModeSelect(toolBars, calendar) {
+      toolBars.forEach(toolBar => {
+        toolBar.addEventListener("click", function (e) {
+          mouseClick = false;
+          checkmode = _mode.SelectMode;
+          clearSelCell();
+          checkModeSelect(toolBar, calendar);
+        })
+      })
+    };
+
+    function checkModeSelect(toolBar, calendar) {
+      date_endPoint.setMonth(date_startPoint.getMonth());
+      date_endPoint.setFullYear(date_startPoint.getFullYear());
+      if (toolBar.checked) {
+        checkmode = _mode.SelectMode;
+      } else {
+        checkmode = _mode.NormalMode;
+      }
+      if (checkmode == _mode.SelectMode) {
+        if (toolBar.value === 'Yesterday') {
+          const textButton = document.querySelector(".btn_Next");
+          textButton.textContent = `Next`;
+          date_startPoint = new Date(); // start
+          date_startPoint.setHours(0, 0, 0, 0);
+          date_startPoint.setDate(date_startPoint.getDate() - 1);
+          date_endPoint = new Date(date_startPoint.toString());
+
+          console.log("date_endPoint", date_endPoint);
+          updateOutputDate(date_endPoint, date_startPoint);
+          highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
+        }
+        if (toolBar.value === 'rad_weekBefore') {
+          date_startPoint.setDate(date_startPoint.getDate() - 0);
+          date_endPoint.setMonth(date_startPoint.getMonth());
+          date_endPoint.setFullYear(date_startPoint.getFullYear());
+          date_endPoint.setDate(date_startPoint.getDate() - 6);
+        }
+        if (toolBar.value === 'rad_weekSelect') {
+          var date_day = Zeller(date_startPoint.getDate(), date_startPoint.getMonth() + 1, date_startPoint.getFullYear());
+          date_endPoint.setDate(date_startPoint.getDate() - date_day);
+          date_startPoint.setDate(date_startPoint.getDate() + 6 - date_day);
+        }
+        if (toolBar.value === 'rad_monthBefore') {
+          date_startPoint.setDate(date_startPoint.getDate());
+          date_endPoint.setMonth(date_startPoint.getMonth());
+          date_endPoint.setFullYear(date_startPoint.getFullYear());
+          date_endPoint.setDate(1);
+        }
+        if (toolBar.value === 'rad_monthSelect') {
+          date_endPoint.setDate(1);
+          date_startPoint.setMonth(date_startPoint.getMonth() + 1);
+          date_startPoint.setDate(1);
+          date_startPoint.setDate(date_startPoint.getDate() - 1);
+        }
+      }
+    }
+
+    //曜日の順序を返す
+    function Zeller(D, M, Y) {
+      var Day = "";
+
+      if (M < 3) {
+        M = M + 12;
+        Y = Y - 1;
+      }
+
+      var C = Math.floor(Y / 100);
+      var K = Y - (100 * C);
+
+      var S = Math.floor(2.6 * M - 5.39) + Math.floor(K / 4) + Math.floor(C / 4) + D + K - (2 * C);
+
+      var ans = S - (7 * Math.floor(S / 7));
+
+      return ans;
+    }
+  }
+}
+
+function timeChartComponent(calendarComponent) {
+  this.reLoad = function () {
+    this.drawTime();
+    this.addEventHover();
+    this.eventClickTimeButton();
+  }
+  this.refresh = function () {
+    this.reset();
+  }
+  this.start = function () {
+    var orgPoint_Time = new Date(null);
+    var endPoint_Time = new Date(null);
+    let originPoint;
+    let originPoint_textBot;
+    // firstLoad();
+
+    function updateOutputTime(_startTime, _endTime) {
+      calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+
+      calendarComponent.endTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
+
+    }
+
+    this.reset = function () {
+      orgPoint_Time = new Date(null);
+      endPoint_Time = new Date(null);
+      clearTimeChart();
+    }
+
+    const timeContent = document.querySelector(".time-content");
+
+    var drawTime = function () {
+      const timeBody = document.querySelector(".body_time");
+      let html = "";
+      // Date cell creation
+      for (i = 0; i < 25; i++) {
+        if (i != 24) {
+          let htmlUnit = `<div class="time-unit">
+            <div class="text-top-containt text-hide"><b>${i}:00</b></div>
+            <div class="verical-line-containt"> 
+                <div class="line hour-line line-non-select">
+      
+                </div>
+                <div class="background non-select"></div>
+            </div>
+            <div class="text-bottom-containt">${i}:00</div>
+            </div>   
+            <div class="time-unit">
+                <div class="text-top-containt text-hide"><b>${i}:30</b></div>
+                <div class="verical-line-containt"> 
+                    <div class="line minute-line line-non-select">
+        
+                    </div>
+                    <div class="background non-select"></div>
+                </div>
+                <div class="text-bottom-containt text-hide">${i}:30</div>
+            </div>`
+          html = html + htmlUnit;
+        } else {
+          let htmlUnit = `<div class="time-unit">
+            <div class="text-top-containt text-hide"><b>${i}:00</b></div>
+            <div class="verical-line-containt"> 
+                <div class="line hour-line line-non-select">
+      
+                </div>
+                <div class="background non-select"></div>
+            </div>
+            <div class="text-bottom-containt">${i}:00</div>
+            </div>`
+          html = html + htmlUnit;
+        }
+      }
+      timeBody.innerHTML = html;
+    }
+    // this.drawTime = drawTime();
+    this.drawTime = function () {
+      drawTime();
+    }
+
+    var addEventHover = function () {
+      const line = document.querySelectorAll(".time-unit");
+
+      line.forEach(item => {
+        item.addEventListener("mouseenter", function (item) {
+          const textTop = item.target.querySelector(".text-top-containt");
+          // const textBot = this.item.querySelector(".text-bottom-containt");
+          const lineNonSelect = item.target.querySelector(".line.line-non-select");
+          const lineSelect = item.target.querySelector(".line.line-select");
+
+          if (lineNonSelect != undefined) {
+            lineNonSelect.classList.add("line-hover-non-select");
+            lineNonSelect.classList.remove("line-non-select");
+          }
+
+          if (lineSelect != undefined) {
+            lineSelect.classList.add("line-hover-select");
+            lineSelect.classList.remove("line-select");
+          }
+
+          textTop.classList.remove("text-hide");
+          textTop.classList.add("text-display");
+          var luc = orgPoint_Time.valueOf();
+        })
+
+        item.addEventListener("mouseleave", function (item) {
+          const textTop = item.target.querySelector(".text-top-containt");
+          const lineNonSelect = item.target.querySelector(".line.line-hover-non-select");
+          const lineSelect = item.target.querySelector(".line.line-hover-select");
+
+          if (lineNonSelect != undefined) {
+            lineNonSelect.classList.remove("line-hover-non-select");
+            lineNonSelect.classList.add("line-non-select");
+          }
+
+          if (lineSelect != undefined) {
+            lineSelect.classList.remove("line-hover-select");
+            lineSelect.classList.add("line-select");
+          }
+
+          textTop.classList.add("text-hide");
+          textTop.classList.remove("text-display");
+        })
+
+        item.addEventListener("click", function (item) {
+          const timeChart = item.currentTarget.closest(".body_time");
+          const timeChart_Unit = timeChart.querySelectorAll(".time-unit");
+          //全てのラインとテキストボトムの色をクリア
+          timeChart_Unit.forEach(Item => {
+            const line = Item.querySelector(".line");
+            const lineSelect = Item.querySelector(".line.line-select");
+            const textBottom = Item.querySelector(".text-bottom-containt");
+            const select_TextBot = Item.querySelector(".text-bottom-containt.text-select");
+            if (lineSelect != undefined) {
+              line.classList.remove("line-select");
+              line.classList.add("line-non-select");
+            }
+            if (select_TextBot != undefined) {
+              textBottom.classList.remove("text-select");
+            }
+          })
+
+          let originTime = item.currentTarget.querySelector(".text-bottom-containt").textContent.split(":");
+          const textTop = item.currentTarget.querySelector(".text-top-containt");
+          const textBot = item.currentTarget.querySelector(".text-bottom-containt");
+          const line = item.currentTarget.querySelector(".line");
+          textTop.classList.remove("text-display");
+          textTop.classList.add("text-hide");
+          textBot.classList.add("text-select");
+          line.classList.remove("line-hover-non-select");
+
+          //設定の原点ポイント
+          if (orgPoint_Time.valueOf() == 0) {
+            orgPoint_Time.setHours(originTime[0]);
+            orgPoint_Time.setMinutes(originTime[1]);
+            line.classList.add("line-select");
+            originPoint = item.currentTarget.querySelector(".line");
+            originPoint_textBot = item.currentTarget.querySelector(".text-bottom-containt");
+          }
+          //設定のエンドポイント
+          if (orgPoint_Time.valueOf() != 0) {
+            originPoint.classList.remove("line-non-select");
+            originPoint.classList.add("line-select");
+            line.classList.remove("line-non-select");
+            line.classList.add("line-select");
+            originPoint_textBot.classList.add("text-select");
+            if (originTime[0] == 24) {
+              endPoint_Time.setHours(23);
+              endPoint_Time.setMinutes(59);
+            } else {
+              endPoint_Time.setHours(originTime[0]);
+              endPoint_Time.setMinutes(originTime[1]);
+            }
+            highlightTimeRange(endPoint_Time, item);
+          }
+        })
+      })
+    }
+    // this.addEventHover = addEventHover();
+    this.addEventHover = function () {
+      addEventHover();
+    }
+
+    function clearTimeChart() {
+      const timeList = document.querySelectorAll(".time-unit");
+      //背景色のクリア
+      timeList.forEach(_time => {
+        const time = _time.querySelector(".background");
+        const line = _time.querySelector(".line");
+        const textBottom = _time.querySelector(".text-bottom-containt");
+        time.classList.remove("select");
+        time.classList.add("non-select");
+        line.classList.remove("line-select");
+        line.classList.add("line-non-select");
+        textBottom.classList.remove("text-select");
+      });
+    }
+    //時間の範囲マーク
+    function highlightTimeRange(endPoint_Time, item) {
+      const timeChart = item.currentTarget.closest(".body_time");
+      const timeList = timeChart.querySelectorAll(".time-unit");
+      //背景色のクリア
+      timeList.forEach(_time => {
+        const time = _time.querySelector(".background")
+        time.classList.remove("select");
+        time.classList.add("non-select");
+      });
+      //背景色マーク
+      timeList.forEach(_time => {
+        let _Time = _time.querySelector(".text-bottom-containt").textContent.split(":");
+        let Time = new Date(null);
+        Time.setHours(_Time[0]);
+        Time.setMinutes(_Time[1]);
+        if (Time >= orgPoint_Time && Time < endPoint_Time || Time < orgPoint_Time && Time >= endPoint_Time) {
+          const time = _time.querySelector(".background")
+          time.classList.remove("non-select");
+          time.classList.add("select");
+        }
+      });
+    }
+
+    var eventClickTimeButton = function () {
+      const time_btnOK = document.querySelector(".time_btn_OK");
+      const time_btnReturn = document.querySelector(".time_btn_Return");
+      time_btnOK.addEventListener("click", function (e) {
+        updateOutputTime(orgPoint_Time, endPoint_Time);
+        const textButton = document.querySelector(".btn_Next");
+        textButton.textContent = `Return`;
+
+        timeContent.classList.remove("timechart-show");
+        timeContent.classList.add("timechart-hide");
+        const calendarContent = document.querySelector(".calendar-content");
+        calendarContent.classList.remove("calendar-hide");
+        calendarContent.classList.add("calendar-show");
+      })
+      time_btnReturn.addEventListener("click", function (e) {
+        timeContent.classList.remove("timechart-show");
+        timeContent.classList.add("timechart-hide");
+        const calendarContent = document.querySelector(".calendar-content");
+        calendarContent.classList.remove("calendar-hide");
+        calendarContent.classList.add("calendar-show");
+      })
+    }
+    // this.eventClickTimeButton = eventClickTimeButton();
+    this.eventClickTimeButton = function () {
+      eventClickTimeButton();
+    }
+  }
+}
+
+// export {calendarComponent};
+
