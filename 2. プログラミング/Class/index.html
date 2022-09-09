@@ -83,7 +83,7 @@
   </div>
   <!-- Trigger/Open The Modal -->
 <button id="myBtnDate" style="margin-right: 30px;">Open Date Modal</button>
-<!-- <button id="myBtnTime">Open Time Modal</button> -->
+<button id="myBtnTime">Open Time Modal</button>
 </div>
 
 
@@ -98,14 +98,14 @@
 
 </div>
 
-<!-- <div id="myModalDateTime" class="modal2">
+<div id="myModalDateTime" class="modal2">
 
   <div class="modal-content">
     <div id="testCalendarTime"></div>  
   </div>
 
-</div> -->
-<div id="testCalendarTime"></div> 
+</div>
+<!-- <div id="testCalendarTime"></div>  -->
 
 <script src="script.js"></script>
 
@@ -114,7 +114,7 @@
   // only date mode
   var modal = document.getElementById("myModalDate");
   var btn = document.getElementById("myBtnDate");
-  var calendar = new calendarComponent("testCalendar", 900, 350, true, OkCallback, returnCallback); 
+  var calendar = new calendarComponent("testCalendar", 900, 350, false, OkCallback, returnCallback); 
   calendar.start();
   function OkCallback(){
     const options = {  year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -134,29 +134,29 @@
     calendar.refresh();
   }
 
-  // // date time mode
-  // var modalTime = document.getElementById("myModalDateTime");
-  // var btnTime = document.getElementById("myBtnTime");
-  // var calendarTime = new calendarComponent("testCalendarTime", 700, 350, true, OkCallbackTime, returnCallbackTime);
+  // date time mode
+  var modalTime = document.getElementById("myModalDateTime");
+  var btnTime = document.getElementById("myBtnTime");
+  var calendarTime = new calendarComponent("testCalendarTime", 700, 350, true, OkCallbackTime, returnCallbackTime);
 
-  // calendarTime.start();
-  // function OkCallbackTime(){
-  //   const options = {  year: 'numeric', month: 'numeric', day: 'numeric' };
-  //   const dateInput = document.querySelector(".date-field");
-  //   const timeInput = document.querySelector(".time-field");
-  //   dateInput.value = `${calendarTime.startDate.toLocaleDateString('ja-JP', options)} - ${calendarTime.endDate.toLocaleDateString('ja-JP', options)}`;
-  //   timeInput.value = `${calendarTime.startTime} - ${calendarTime.endTime}`;
-  //   modalTime.style.display = "none";
-  // }
+  calendarTime.start();
+  function OkCallbackTime(){
+    const options = {  year: 'numeric', month: 'numeric', day: 'numeric' };
+    const dateInput = document.querySelector(".date-field");
+    const timeInput = document.querySelector(".time-field");
+    dateInput.value = `${calendarTime.startDate.toLocaleDateString('ja-JP', options)} - ${calendarTime.endDate.toLocaleDateString('ja-JP', options)}`;
+    timeInput.value = `${calendarTime.startTime} - ${calendarTime.endTime}`;
+    modalTime.style.display = "none";
+  }
 
-  // function returnCallbackTime(){
-  //   modalTime.style.display = "none";
-  // }
-  // // var span = document.getElementsByClassName("close")[0];
-  // btnTime.onclick = function() {
-  //   modalTime.style.display = "block";
-  //   calendarTime.refresh();
-  // }
+  function returnCallbackTime(){
+    modalTime.style.display = "none";
+  }
+  // var span = document.getElementsByClassName("close")[0];
+  btnTime.onclick = function() {
+    modalTime.style.display = "block";
+    calendarTime.refresh();
+  }
   // span.onclick = function() {
   //   modal.style.display = "none";
   // }
@@ -165,9 +165,9 @@
     if (event.target == modal) {
       modal.style.display = "none";
     }
-    // if (event.target == modalTime) {
-    //   modalTime.style.display = "none";
-    // }
+    if (event.target == modalTime) {
+      modalTime.style.display = "none";
+    }
   }
 </script>
 

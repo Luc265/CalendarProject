@@ -3,6 +3,7 @@
   this.width = width;
   this.height = height;
   this.attackTimeChart = attackTimeChart;
+  this.parent = document.querySelector("#"+name);
 
   // -Output------------------------
   this.startDate = new Date(0, 0, 0, 0);
@@ -182,7 +183,7 @@
     // console.log(htmlContent);
     container.innerHTML = htmlContent;
     // centerYear.style.width = offset_width.toString() + "%";
-    const calendarContent = document.querySelector(".calendar-content");
+    const calendarContent = this.parent.querySelector(".calendar-content");
     calendarContent.style.width = this.width + "px";
     calendarContent.style.height = this.height + "px";
     if (this.attackTimeChart == true) {
@@ -242,9 +243,9 @@
     let startDay = new Date(thisMonth.index, thisYear, 1).getDay()
 
     // Element queries
-    const calendarWidgets = document.querySelectorAll(".calendar-widget");
-    let toolBars = document.querySelectorAll(".radio");
-    const calendarContent = document.querySelector(".calendar-content");
+    const calendarWidgets = calendarComponent.parent.querySelectorAll(".calendar-widget");
+    let toolBars = calendarComponent.parent.querySelectorAll(".radio");
+    const calendarContent = calendarComponent.parent.querySelector(".calendar-content");
     // const timeContent = document.querySelector(".time-content");
 
     this.reset = function () {
@@ -344,7 +345,7 @@
     // Cell UI Animation
     function clearSelCell() {
       // For single calendar, input the div with calendar class as the arguments, for dual calendar, input the div with "dual-calendar" class as arguments.
-      const cells = document.querySelectorAll(".date");
+      const cells = calendarComponent.parent.querySelectorAll(".date");
       cells.forEach(cell => {
         cell.classList.remove("in-range");
       })
@@ -379,13 +380,13 @@
       if (calendar.classList.contains("plus-one")) {
         monthIndex = currMonth.index + 1;
         month = new Month(monthIndex);
-        leftYear = document.querySelector(".leftYear");
-        rightYear = document.querySelector(".rightYear");
-        centerYear = document.querySelector(".centerYear");
+        leftYear = calendarComponent.parent.querySelector(".leftYear");
+        rightYear = calendarComponent.parent.querySelector(".rightYear");
+        centerYear = calendarComponent.parent.querySelector(".centerYear");
         if (monthIndex > 11) {
           year++;
-          leftYearText = document.querySelector(".leftYear p");
-          rightYearText = document.querySelector(".rightYear p");
+          leftYearText = calendarComponent.parent.querySelector(".leftYear p");
+          rightYearText = calendarComponent.parent.querySelector(".rightYear p");
           leftYearText.textContent = `${year - 1}`;
           rightYearText.textContent = `${year}`;
 
@@ -485,7 +486,7 @@
                 const clickMonth = cell.closest(".calendar").querySelector(".month-text p").textContent;
                 const clickDate = Number(cell.querySelector(".date-text").textContent);
                 if (calendarComponent.attackTimeChart == true) {
-                  const textButton = document.querySelector(".btn_Next");
+                  const textButton = calendarComponent.parent.querySelector(".btn_Next");
                   textButton.textContent = `Next`;
                 }
 
@@ -628,19 +629,19 @@
     }
 
     var eventClickButton = function () {
-      const btnOK = document.querySelector(".btn_OK");
-      const btnNext = document.querySelector(".btn_Next");
+      const btnOK = calendarComponent.parent.querySelector(".btn_OK");
+      const btnNext = calendarComponent.parent.querySelector(".btn_Next");
       btnOK.addEventListener("click", e => this.OkCallback());
 
       btnNext.attackTimeChart = this.attackTimeChart;
       btnNext.returnCallback = this.returnCallback;
       btnNext.addEventListener("click", function (e) {
         if (this.attackTimeChart == true) {
-          const textButton = document.querySelector(".btn_Next");
+          const textButton = calendarComponent.parent.querySelector(".btn_Next");
           if (textButton.textContent == 'Next') {
             calendarContent.classList.remove("calendar-show");
             calendarContent.classList.add("calendar-hide");
-            const timeContent = document.querySelector(".time-content");
+            const timeContent = calendarComponent.parent.querySelector(".time-content");
             timeContent.classList.remove("timechart-hide");
             timeContent.classList.remove("timechart-show");
           } else {
@@ -670,15 +671,15 @@
 
       toggleCalendar(widget);
 
-      const section = document.querySelector(".dual-calendar");
+      const section = calendarComponent.parent.querySelector(".dual-calendar");
       eventModeSelect(toolBars, section);
       this.eventClickButton();
       windowResize();
     });
 
     function windowResize() {
-      const sidebar = document.querySelector(".calendar-sidebar");
-      const section = document.querySelector(".dual-calendar");
+      const sidebar = calendarComponent.parent.querySelector(".calendar-sidebar");
+      const section = calendarComponent.parent.querySelector(".dual-calendar");
       var offset_width = sidebar.offsetWidth + section.offsetWidth;
       // const calendar_footer = document.querySelector(".calendar-footer");
       // calendar_footer.style.width = offset_width.toString() + "px";
@@ -687,14 +688,14 @@
       calendarContentHeight = calendarContent.offsetHeight;
       // small
       if (calendarContentWidth < 700 || calendarContentHeight < 400) {
-        const moveBtns = document.querySelectorAll(".prev-btn,.next-btn");
+        const moveBtns = calendarComponent.parent.querySelectorAll(".prev-btn,.next-btn");
         moveBtns.forEach(btn => {
           btn.classList.remove("move-btn-medium");
           btn.classList.remove("move-btn-big");
           btn.classList.add("move-btn-small");
         })
       } else {
-        const moveBtns = document.querySelectorAll(".prev-btn,.next-btn");
+        const moveBtns = calendarComponent.parent.querySelectorAll(".prev-btn,.next-btn");
         moveBtns.forEach(btn => {
           btn.classList.remove("move-btn-small");
           btn.classList.remove("move-btn-big");
@@ -724,7 +725,7 @@
       }
       if (checkmode == _mode.SelectMode) {
         if (toolBar.value === 'Yesterday') {
-          const textButton = document.querySelector(".btn_Next");
+          const textButton = calendarComponent.parent.querySelector(".btn_Next");
           textButton.textContent = `Next`;
           date_startPoint = new Date(); // start
           date_startPoint.setHours(0, 0, 0, 0);
@@ -783,6 +784,7 @@
 }
 
 function timeChartComponent(calendarComponent) {
+  this.parent = calendarComponent.parent;
   this.reLoad = function () {
     this.drawTime();
     this.addEventHover();
@@ -792,6 +794,7 @@ function timeChartComponent(calendarComponent) {
     this.reset();
   }
   this.start = function () {
+    var timeChartComponent = this;
     var orgPoint_Time = new Date(null);
     var endPoint_Time = new Date(null);
     let originPoint;
@@ -811,10 +814,10 @@ function timeChartComponent(calendarComponent) {
       clearTimeChart();
     }
 
-    const timeContent = document.querySelector(".time-content");
+    const timeContent = timeChartComponent.parent.querySelector(".time-content");
 
     var drawTime = function () {
-      const timeBody = document.querySelector(".body_time");
+      const timeBody = timeChartComponent.parent.querySelector(".body_time");
       let html = "";
       // Date cell creation
       for (i = 0; i < 25; i++) {
@@ -862,7 +865,7 @@ function timeChartComponent(calendarComponent) {
     }
 
     var addEventHover = function () {
-      const line = document.querySelectorAll(".time-unit");
+      const line = timeChartComponent.parent.querySelectorAll(".time-unit");
 
       line.forEach(item => {
         item.addEventListener("mouseenter", function (item) {
@@ -965,7 +968,7 @@ function timeChartComponent(calendarComponent) {
     }
 
     function clearTimeChart() {
-      const timeList = document.querySelectorAll(".time-unit");
+      const timeList = timeChartComponent.parent.querySelectorAll(".time-unit");
       //背景色のクリア
       timeList.forEach(_time => {
         const time = _time.querySelector(".background");
@@ -1003,23 +1006,23 @@ function timeChartComponent(calendarComponent) {
     }
 
     var eventClickTimeButton = function () {
-      const time_btnOK = document.querySelector(".time_btn_OK");
-      const time_btnReturn = document.querySelector(".time_btn_Return");
+      const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
+      const time_btnReturn = timeChartComponent.parent.querySelector(".time_btn_Return");
       time_btnOK.addEventListener("click", function (e) {
         updateOutputTime(orgPoint_Time, endPoint_Time);
-        const textButton = document.querySelector(".btn_Next");
+        const textButton = timeChartComponent.parent.querySelector(".btn_Next");
         textButton.textContent = `Return`;
 
         timeContent.classList.remove("timechart-show");
         timeContent.classList.add("timechart-hide");
-        const calendarContent = document.querySelector(".calendar-content");
+        const calendarContent = timeChartComponent.parent.querySelector(".calendar-content");
         calendarContent.classList.remove("calendar-hide");
         calendarContent.classList.add("calendar-show");
       })
       time_btnReturn.addEventListener("click", function (e) {
         timeContent.classList.remove("timechart-show");
         timeContent.classList.add("timechart-hide");
-        const calendarContent = document.querySelector(".calendar-content");
+        const calendarContent = timeChartComponent.parent.querySelector(".calendar-content");
         calendarContent.classList.remove("calendar-hide");
         calendarContent.classList.add("calendar-show");
       })
