@@ -11,17 +11,9 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
   this.endDate = new Date(0, 0, 0, 0);
   this.startTime = "";
   this.endTime = "";
-  this.oldstartDate = new Date(0, 0, 0, 0);
-  this.oldendDate = new Date(0, 0, 0, 0);
-  this.oldstartTime = "";
-  this.oldendTime = "";
   this.OkCallback = OkCallback;
   this.returnCallback = returnCallback;
   // -Output------------------------
-
-  // this.saveStatusOutput = function () {
-  //   this.saveStatusOutput(this.startDate, this.endDate);
-  // }
 
   this.refresh = function () {
     this.reset();
@@ -193,6 +185,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     const container = document.getElementById(this.name);
     console.log(container);
     container.innerHTML = htmlContent;
+    // centerYear.style.width = offset_width.toString() + "%";
     const calendarContent = this.parent.querySelector(".calendar-content");
     calendarContent.style.width = this.width + "px";
     calendarContent.style.height = this.height + "px";
@@ -242,7 +235,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
 
     // To store the date today.
     // Variables with "curr" represents the current displayed data.
-
     let currYear = thisYear = today.getFullYear();
     let currMonth = thisMonth = new Month(today.getMonth());
     let currDate = today.getDate();
@@ -255,28 +247,16 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     // const timeContent = document.querySelector(".time-content");
 
     this.reset = function () {
-      const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
-      textButton.textContent = `OK`;
-      calendarComponent.startDate = new Date(calendarComponent.oldstartDate.toString());
-      calendarComponent.endDate = new Date(calendarComponent.oldendDate.toString());
-
       date_startPoint = new Date(calendarComponent.startDate.toString());
+      date_startPoint.setHours(0, 0, 0, 0);
       date_endPoint = new Date(calendarComponent.endDate.toString());
-      if (calendarComponent.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
-        let currMonthIndex;
-        currMonthIndex = calendarComponent.startDate.getMonth();
-        currMonth = new Month(currMonthIndex);
-        currYearIndex = calendarComponent.startDate.getFullYear();
-        currYear = currYearIndex;
-      }
+      date_endPoint.setHours(0, 0, 0, 0);
+      reLoadForSelectCell();
 
-      clearSelCell();
-      calendars = calendarComponent.parent.querySelectorAll(".calendar");
-      calendars.forEach(calendar => {
-        clearTable(calendar);
-        drawTable(calendar);
-        highlightCellRange(date_endPoint, calendar);
-      })
+      if (calendarComponent.attackTimeChart == false) {
+        const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
+        textButton.textContent = `OK`;
+      }
 
       if (calendarComponent.attackTimeChart == true) {
         calendarComponent.timeChart.refresh();
@@ -294,13 +274,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
         calendarComponent.endDate = new Date(_startDate.toString());
         calendarComponent.startDate = new Date(_endDate.toString());
       }
-
-    }
-
-    this.saveStatusOutput = function () {
-      // this.startDate, this.endDate
-      calendarComponent.oldstartDate = new Date(calendarComponent.startDate.toString());
-      calendarComponent.oldendDate = new Date(calendarComponent.endDate.toString());
     }
 
     function Month(index) {
@@ -414,7 +387,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     }
 
     function drawTable(calendar) {
-
       let month = currMonth;
       let year = currYear;
 
@@ -671,6 +643,10 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
 
       btnCancel.returnCallback = this.returnCallback;
       btnCancel.addEventListener("click", function (e) {
+        if (firstDate.toString() != calendarComponent.oldDateStartPoint.toString() && firstDate.toString() != calendarComponent.oldDateEndPoint.toString()) {
+          calendarComponent.startDate = new Date(calendarComponent.oldDateStartPoint.toString());
+          calendarComponent.endDate = new Date(calendarComponent.oldDateEndPoint.toString());
+        }
         this.returnCallback();
       });
 
@@ -682,11 +658,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           calendarContent.classList.add("calendar-hide");
           const timeContent = calendarComponent.parent.querySelector(".time-content");
           let timeTittle = timeContent.querySelector(".time-tittle p");
+          // calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+          var a = calendarComponent.startDate.getMonth();
+          var b = calendarComponent.startDate.getDate();
           timeTittle.textContent = `${(calendarComponent.startDate.getMonth() + 1).toString()} - ${calendarComponent.startDate.getDate().toString()}`;
           timeContent.classList.remove("timechart-hide");
           timeContent.classList.remove("timechart-show");
         } else {
-          calendarComponent.saveStatusOutput();
           this.OkCallback();
         }
       }, false)
@@ -696,6 +674,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     function windowResize() {
       const sidebar = calendarComponent.parent.querySelector(".calendar-sidebar");
       const section = calendarComponent.parent.querySelector(".dual-calendar");
+      var offset_width = sidebar.offsetWidth + section.offsetWidth;
 
       calendarContentWidth = calendarContent.offsetWidth;
       calendarContentHeight = calendarContent.offsetHeight;
@@ -738,8 +717,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       }
       if (checkmode == _mode.SelectMode) {
         if (toolBar.value === 'Yesterday') {
-          const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
-          textButton.textContent = `Next`;
           date_startPoint = new Date(); // start
           date_startPoint.setHours(0, 0, 0, 0);
           date_startPoint.setDate(date_startPoint.getDate() - 1);
@@ -794,9 +771,48 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       return ans;
     }
 
+    function reLoadForSelectCell() {
+      calendarComponent.oldDateStartPoint = new Date(calendarComponent.startDate.toString());
+      calendarComponent.oldDateStartPoint.setHours(0, 0, 0, 0);
+      calendarComponent.oldDateEndPoint = new Date(calendarComponent.endDate.toString());
+      calendarComponent.oldDateEndPoint.setHours(0, 0, 0, 0);
+
+      if (date_startPoint.toString() != firstDate.toString()) {
+        currMonth = new Month(calendarComponent.startDate.getMonth());
+        currYear = calendarComponent.startDate.getFullYear();
+        console.log(currMonth);
+      }
+
+      calendarWidgets.forEach(widget => {
+        const dateField = widget.querySelector(".date-field");
+        const calendarWrapper = widget.querySelector(".calendar-wrapper");
+        const calendars = calendarWrapper.querySelectorAll(".calendar");
+
+        calendarWrapper.style.display = 'block';
+        widget.classList.add("active");
+        widget.setAttribute("data-active", "true");
+        dateField.classList.add("active");
+
+        // if (dateField.value !== "") {
+        //   updateSelData(dateField);
+        //   currMonth = selMonth;
+        //   currYear = selYear;
+        // }
+
+        calendars.forEach(calendar => {
+          clearTable(calendar);
+          drawTable(calendar);
+          if (date_startPoint.toString() !== firstDate.toString()) { //新規状態ではないチェック
+            highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
+          }
+        })
+      });
+    }
+
     // ==================================================================
     // ________________________ LISTENERS _______________________________
     // ==================================================================
+    //duoc tao khi bat dau load man hinh
     calendarWidgets.forEach(widget => {
       // If the widget has the "default-today" class, sets its value to today's date.
       const dateField = widget.querySelector(".date-field");
@@ -844,7 +860,7 @@ function timeChartComponent(calendarComponent) {
         if (_startTime.valueOf() < _endTime.valueOf()) {
           calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
           calendarComponent.endTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
-        }else{
+        } else {
           calendarComponent.endTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
           calendarComponent.startTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
         }
@@ -1042,7 +1058,6 @@ function timeChartComponent(calendarComponent) {
 
       time_btnOK.addEventListener("click", function (e) {
         updateOutputTime(orgPoint_Time, endPoint_Time);
-        calendarComponent.saveStatusOutput();
         calendarComponent.OkCallback();
         timeContent.classList.remove("timechart-show");
         timeContent.classList.add("timechart-hide");

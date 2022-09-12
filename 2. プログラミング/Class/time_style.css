@@ -171,7 +171,7 @@ div.horizol-line {
 
 }
 
-.time_btn_OK {
+.time_btn_Return {
   position: absolute;
   display: inline-block;
   right: 160px;
@@ -185,7 +185,7 @@ div.horizol-line {
   font-size: 90%;
 }
 
-.time_btn_Return {
+.time_btn_OK {
   position: absolute;
   display: inline-block;
   right: 50px;
