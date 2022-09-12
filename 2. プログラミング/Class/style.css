@@ -21,12 +21,7 @@
     padding: 0;
     box-sizing: border-box;
   }
-  /* Hoang: nhung element gan nhau trong html thi css nen de gan nhau cho e doc
-    Select chi tiet de tranh bi trung doi tuong 
-    Cai gi khong dung den thi xoa di
-    Them phan xu ly responsive
-      - Xet min-width, min-height, max-width, max-height cho calendar, xong xu ly responsive trong vung day
-  */
+
   body {
     align-items: flex-start;
     justify-content: flex-start;
@@ -441,7 +436,7 @@
     padding: 5px;
   }
 
-  div.calendar-footer .btn_OK {
+  div.calendar-footer .btn_Cancel {
     position: absolute;
     display: inline-block;
     right: 160px;
@@ -454,7 +449,7 @@
     font-size: 90%;
   }
 
-  div.calendar-footer .btn_Next {
+  div.calendar-footer .btn_Next_OK {
     position: absolute;
     display: inline-block;
     right: 50px;
