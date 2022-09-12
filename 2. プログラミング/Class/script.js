@@ -11,9 +11,17 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
   this.endDate = new Date(0, 0, 0, 0);
   this.startTime = "";
   this.endTime = "";
+  this.oldstartDate = new Date(0, 0, 0, 0);
+  this.oldendDate = new Date(0, 0, 0, 0);
+  this.oldstartTime = "";
+  this.oldendTime = "";
   this.OkCallback = OkCallback;
   this.returnCallback = returnCallback;
   // -Output------------------------
+
+  // this.saveStatusOutput = function () {
+  //   this.saveStatusOutput(this.startDate, this.endDate);
+  // }
 
   this.refresh = function () {
     this.reset();
@@ -67,13 +75,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
             <div class="calendar-wrapper" style="display: block;">
               <div class="tabYear">
                 <div class="leftYear year-hide">
-                  <p>2012</p>
+                  <p> <b>2012</b></p>
                 </div>
                 <div class="centerYear year-show">
-                  <p>2012</p>
+                  <p><b>2012</b></p>
                 </div>
                 <div class="rightYear year-hide">
-                  <p>2012</p>
+                  <p><b>2012</b></p>
                 </div>
               </div>
               <div class="dual-calendar">
@@ -84,10 +92,10 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
                     </div>
     
                     <div class="month-text">
-                      <p>September 2018</p>
+                      <p><b>September 2018</b></p>
                     </div>
                     <div class="month">
-                      <p>September 2018</p>
+                      <p><b>September 2018</b></p>
                     </div>
                   </div>
                   <div class="calendar-body">
@@ -109,10 +117,10 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
                 <div class="calendar plus-one">
                   <div class="calendar-header">
                     <div class="month-text">
-                      <p>September 2018</p>
+                      <p><b>September 2018</b></p>
                     </div>
                     <div class="month">
-                      <p>September 2018</p>
+                      <p><b>September 2018</b></p>
                     </div>
     
                     <div class="next-btn move-btn-medium">
@@ -157,6 +165,9 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       htmlContent += `<!-- 時間表示 -->
         <div class="time-content timechart-hide">
           <div class="time-section">
+            <div class="time-tittle">
+              <p><b>3/4</b></p>
+            </div>
             <div class="time-main-content">
               <div class="horizol-line">
               </div>
@@ -182,7 +193,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     const container = document.getElementById(this.name);
     console.log(container);
     container.innerHTML = htmlContent;
-    // centerYear.style.width = offset_width.toString() + "%";
     const calendarContent = this.parent.querySelector(".calendar-content");
     calendarContent.style.width = this.width + "px";
     calendarContent.style.height = this.height + "px";
@@ -232,6 +242,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
 
     // To store the date today.
     // Variables with "curr" represents the current displayed data.
+
     let currYear = thisYear = today.getFullYear();
     let currMonth = thisMonth = new Month(today.getMonth());
     let currDate = today.getDate();
@@ -244,16 +255,29 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     // const timeContent = document.querySelector(".time-content");
 
     this.reset = function () {
-      date_startPoint = new Date(0, 0, 0, 0);
-      date_startPoint.setHours(0, 0, 0, 0);
-      date_endPoint = new Date(0, 0, 0, 0);
-      date_endPoint.setHours(0, 0, 0, 0);
-      if (calendarComponent.attackTimeChart == false) {
-        const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
-        textButton.textContent = `OK`;
+      const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
+      textButton.textContent = `OK`;
+      calendarComponent.startDate = new Date(calendarComponent.oldstartDate.toString());
+      calendarComponent.endDate = new Date(calendarComponent.oldendDate.toString());
+
+      date_startPoint = new Date(calendarComponent.startDate.toString());
+      date_endPoint = new Date(calendarComponent.endDate.toString());
+      if (calendarComponent.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
+        let currMonthIndex;
+        currMonthIndex = calendarComponent.startDate.getMonth();
+        currMonth = new Month(currMonthIndex);
+        currYearIndex = calendarComponent.startDate.getFullYear();
+        currYear = currYearIndex;
       }
-      
+
       clearSelCell();
+      calendars = calendarComponent.parent.querySelectorAll(".calendar");
+      calendars.forEach(calendar => {
+        clearTable(calendar);
+        drawTable(calendar);
+        highlightCellRange(date_endPoint, calendar);
+      })
+
       if (calendarComponent.attackTimeChart == true) {
         calendarComponent.timeChart.refresh();
       }
@@ -263,8 +287,20 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     // _________________________ OBJECTS ________________________________
     // ==================================================================
     function updateOutputDate(_startDate, _endDate) {
-      calendarComponent.startDate = new Date(_startDate.toString());
-      calendarComponent.endDate = new Date(_endDate.toString());
+      if (_startDate.valueOf() < _endDate.valueOf()) {
+        calendarComponent.startDate = new Date(_startDate.toString());
+        calendarComponent.endDate = new Date(_endDate.toString());
+      } else {
+        calendarComponent.endDate = new Date(_startDate.toString());
+        calendarComponent.startDate = new Date(_endDate.toString());
+      }
+
+    }
+
+    this.saveStatusOutput = function () {
+      // this.startDate, this.endDate
+      calendarComponent.oldstartDate = new Date(calendarComponent.startDate.toString());
+      calendarComponent.oldendDate = new Date(calendarComponent.endDate.toString());
     }
 
     function Month(index) {
@@ -378,6 +414,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     }
 
     function drawTable(calendar) {
+
       let month = currMonth;
       let year = currYear;
 
@@ -641,12 +678,15 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       btnNext_OK.OkCallback = this.OkCallback;
       btnNext_OK.addEventListener("click", function (e) {
         if (this.attackTimeChart == true) {
-            calendarContent.classList.remove("calendar-show");
-            calendarContent.classList.add("calendar-hide");
-            const timeContent = calendarComponent.parent.querySelector(".time-content");
-            timeContent.classList.remove("timechart-hide");
-            timeContent.classList.remove("timechart-show");
+          calendarContent.classList.remove("calendar-show");
+          calendarContent.classList.add("calendar-hide");
+          const timeContent = calendarComponent.parent.querySelector(".time-content");
+          let timeTittle = timeContent.querySelector(".time-tittle p");
+          timeTittle.textContent = `${(calendarComponent.startDate.getMonth() + 1).toString()} - ${calendarComponent.startDate.getDate().toString()}`;
+          timeContent.classList.remove("timechart-hide");
+          timeContent.classList.remove("timechart-show");
         } else {
+          calendarComponent.saveStatusOutput();
           this.OkCallback();
         }
       }, false)
@@ -656,7 +696,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     function windowResize() {
       const sidebar = calendarComponent.parent.querySelector(".calendar-sidebar");
       const section = calendarComponent.parent.querySelector(".dual-calendar");
-      var offset_width = sidebar.offsetWidth + section.offsetWidth;
 
       calendarContentWidth = calendarContent.offsetWidth;
       calendarContentHeight = calendarContent.offsetHeight;
@@ -758,7 +797,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     // ==================================================================
     // ________________________ LISTENERS _______________________________
     // ==================================================================
-    //duoc tao khi bat dau load man hinh
     calendarWidgets.forEach(widget => {
       // If the widget has the "default-today" class, sets its value to today's date.
       const dateField = widget.querySelector(".date-field");
@@ -797,10 +835,19 @@ function timeChartComponent(calendarComponent) {
     let originPoint;
     let originPoint_textBot;
 
+    // =======================================
+    // _____________ FUNCTIONS _______________
+    // =======================================
+
     function updateOutputTime(_startTime, _endTime) {
       if (_startTime.valueOf() != (new Date(null)).valueOf()) {
-        calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
-        calendarComponent.endTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
+        if (_startTime.valueOf() < _endTime.valueOf()) {
+          calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+          calendarComponent.endTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
+        }else{
+          calendarComponent.endTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+          calendarComponent.startTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
+        }
       } else {
         calendarComponent.startTime = "";
         calendarComponent.endTime = "";
@@ -812,6 +859,10 @@ function timeChartComponent(calendarComponent) {
       endPoint_Time = new Date(null);
       updateOutputTime(orgPoint_Time, endPoint_Time);
       clearTimeChart();
+      const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
+      if (orgPoint_Time.valueOf() == (new Date(null)).valueOf() || endPoint_Time.valueOf() == (new Date(null)).valueOf()) {
+        time_btnOK.disabled = true;
+      }
     }
 
     const timeContent = timeChartComponent.parent.querySelector(".time-content");
@@ -928,9 +979,7 @@ function timeChartComponent(calendarComponent) {
             line.classList.add("line-select");
             originPoint = item.currentTarget.querySelector(".line");
             originPoint_textBot = item.currentTarget.querySelector(".text-bottom-containt");
-          }
-          //設定のエンドポイント
-          if (orgPoint_Time.valueOf() != 0) {
+          } else {
             originPoint.classList.remove("line-non-select");
             originPoint.classList.add("line-select");
             line.classList.remove("line-non-select");
@@ -938,7 +987,6 @@ function timeChartComponent(calendarComponent) {
             originPoint_textBot.classList.add("text-select");
             endPoint_Time.setHours(originTime[0]);
             endPoint_Time.setMinutes(originTime[1]);
-            // }
             highlightTimeRange(endPoint_Time, item);
           }
         })
@@ -991,9 +1039,10 @@ function timeChartComponent(calendarComponent) {
       const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
       const time_btnReturn = timeChartComponent.parent.querySelector(".time_btn_Return");
       const calendarContent = timeChartComponent.parent.querySelector(".calendar-content");
- 
+
       time_btnOK.addEventListener("click", function (e) {
         updateOutputTime(orgPoint_Time, endPoint_Time);
+        calendarComponent.saveStatusOutput();
         calendarComponent.OkCallback();
         timeContent.classList.remove("timechart-show");
         timeContent.classList.add("timechart-hide");
@@ -1010,5 +1059,15 @@ function timeChartComponent(calendarComponent) {
     this.eventClickTimeButton = function () {
       eventClickTimeButton();
     }
+
+    // ==================================================================
+    // ________________________ LISTENERS _______________________________
+    // ==================================================================
+    setInterval(function () {
+      if (orgPoint_Time.valueOf() != (new Date(null)).valueOf() && endPoint_Time.valueOf() != (new Date(null)).valueOf() && calendarComponent.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendarComponent.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
+        const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
+        time_btnOK.disabled = false;
+      }
+    }, 20)
   }
 }
