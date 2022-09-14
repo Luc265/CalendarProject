@@ -9,10 +9,8 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
   // -Output------------------------
   this.startDate = new Date(0, 0, 0, 0);
   this.endDate = new Date(0, 0, 0, 0);
-  this.startTime = new Date(null);
-  this.endTime = new Date(null);
-  this.startdatePoint = "";
-  this.enddatePoint = "";
+  this.startTime = "";
+  this.endTime = "";
   this.OkCallback = OkCallback;
   this.returnCallback = returnCallback;
   // -Output------------------------
@@ -160,17 +158,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
         <div class="time-content timechart-hide">
           <div class="time-section">
             <div class="time-tittle">
-
-              <div class="prev-timebtn">
-                <i class="material-icons">keyboard_arrow_left</i>
-              </div>
-              <div class="time-date">
-                <p><b>3/4</b></p>
-              </div>
-              <div class="next-timebtn">
-                <i class="material-icons">keyboard_arrow_right</i>
-              </div>
-
+              <p><b>3/4</b></p>
             </div>
             <div class="time-main-content">
               <div class="horizol-line">
@@ -263,19 +251,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       date_startPoint.setHours(0, 0, 0, 0);
       date_endPoint = new Date(calendarComponent.endDate.toString());
       date_endPoint.setHours(0, 0, 0, 0);
-
       reLoadForSelectCell();
 
-      const btn_Next_OK = calendarComponent.parent.querySelector(".btn_Next_OK");
       if (calendarComponent.attackTimeChart == false) {
-        // const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
-        btn_Next_OK.textContent = `OK`;
+        const textButton = calendarComponent.parent.querySelector(".btn_Next_OK");
+        textButton.textContent = `OK`;
       }
-      if (calendarComponent.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendarComponent.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
-        btn_Next_OK.disabled = false;
-      } else {
-        btn_Next_OK.disabled = true;
-      }
+
       if (calendarComponent.attackTimeChart == true) {
         calendarComponent.timeChart.refresh();
       }
@@ -292,8 +274,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
         calendarComponent.endDate = new Date(_startDate.toString());
         calendarComponent.startDate = new Date(_endDate.toString());
       }
-      const btn_Next_OK = calendarComponent.parent.querySelector(".btn_Next_OK");
-      btn_Next_OK.disabled = false;
     }
 
     function Month(index) {
@@ -677,11 +657,11 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           calendarContent.classList.remove("calendar-show");
           calendarContent.classList.add("calendar-hide");
           const timeContent = calendarComponent.parent.querySelector(".time-content");
-          timeChart.refresh();
+          let timeTittle = timeContent.querySelector(".time-tittle p");
+          // calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+          timeTittle.textContent = `${(calendarComponent.startDate.getMonth() + 1).toString()} - ${calendarComponent.startDate.getDate().toString()}`;
           timeContent.classList.remove("timechart-hide");
           timeContent.classList.remove("timechart-show");
-          // calendarComponent.startdatePoint = date_endPoint;
-          // calendarComponent.enddatePoint = date_startPoint;
         } else {
           this.OkCallback();
         }
@@ -699,30 +679,18 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       // small
       if (calendarContentWidth < 700 || calendarContentHeight < 400) {
         const moveBtns = calendarComponent.parent.querySelectorAll(".prev-btn,.next-btn");
-        const moveTimeBtns = calendarComponent.parent.querySelectorAll(".prev-timebtn, .next-timebtn");
         moveBtns.forEach(btn => {
           btn.classList.remove("move-btn-medium");
           btn.classList.remove("move-btn-big");
           btn.classList.add("move-btn-small");
-        });
-        moveTimeBtns.forEach(btn => {
-          btn.classList.remove("move-timebtn-medium");
-          btn.classList.remove("move-timebtn-big");
-          btn.classList.add("move-timebtn-small");
-        });
+        })
       } else {
         const moveBtns = calendarComponent.parent.querySelectorAll(".prev-btn,.next-btn");
-        const moveTimeBtns = calendarComponent.parent.querySelectorAll(".prev-timebtn, .next-timebtn");
         moveBtns.forEach(btn => {
           btn.classList.remove("move-btn-small");
           btn.classList.remove("move-btn-big");
           btn.classList.add("move-btn-medium");
-        });
-        moveBtns.forEach(btn => {
-          btn.classList.remove("move-timebtn-small");
-          btn.classList.remove("move-timebtn-big");
-          btn.classList.add("move-timebtn-medium");
-        });
+        })
       }
     }
 
@@ -738,46 +706,45 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     };
 
     function checkModeSelect(toolBar, calendar) {
+      date_endPoint.setMonth(date_startPoint.getMonth());
+      date_endPoint.setFullYear(date_startPoint.getFullYear());
       if (toolBar.checked) {
         checkmode = _mode.SelectMode;
       } else {
         checkmode = _mode.NormalMode;
       }
       if (checkmode == _mode.SelectMode) {
-        const btn_Next_OK = calendarComponent.parent.querySelector(".btn_Next_OK");
-        btn_Next_OK.disabled = true;
-
         if (toolBar.value === 'Yesterday') {
           date_startPoint = new Date(); // start
           date_startPoint.setHours(0, 0, 0, 0);
           date_startPoint.setDate(date_startPoint.getDate() - 1);
           date_endPoint = new Date(date_startPoint.toString());
-          btn_Next_OK.disabled = false;
+
+          console.log("date_endPoint", date_endPoint);
           updateOutputDate(date_endPoint, date_startPoint);
           highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
         }
         if (toolBar.value === 'rad_weekBefore') {
-          date_startPoint.setDate(date_startPoint.getDate());
-          var a = date_startPoint.getMonth();
-          date_endPoint = new Date(date_startPoint.toString());
+          date_startPoint.setDate(date_startPoint.getDate() - 0);
+          date_endPoint.setMonth(date_startPoint.getMonth());
+          date_endPoint.setFullYear(date_startPoint.getFullYear());
           date_endPoint.setDate(date_startPoint.getDate() - 6);
         }
         if (toolBar.value === 'rad_weekSelect') {
           var date_day = Zeller(date_startPoint.getDate(), date_startPoint.getMonth() + 1, date_startPoint.getFullYear());
-          date_endPoint = new Date(date_startPoint.toString());
           date_endPoint.setDate(date_startPoint.getDate() - date_day);
           date_startPoint.setDate(date_startPoint.getDate() + 6 - date_day);
         }
         if (toolBar.value === 'rad_monthBefore') {
-          // date_startPoint.setDate(date_startPoint.getDate());
-          date_endPoint = new Date(date_startPoint.toString());
+          date_startPoint.setDate(date_startPoint.getDate());
+          date_endPoint.setMonth(date_startPoint.getMonth());
+          date_endPoint.setFullYear(date_startPoint.getFullYear());
           date_endPoint.setDate(1);
         }
         if (toolBar.value === 'rad_monthSelect') {
-          date_endPoint = new Date(date_startPoint.toString());
           date_endPoint.setDate(1);
-          date_startPoint.setDate(1);
           date_startPoint.setMonth(date_startPoint.getMonth() + 1);
+          date_startPoint.setDate(1);
           date_startPoint.setDate(date_startPoint.getDate() - 1);
         }
       }
@@ -872,50 +839,37 @@ function timeChartComponent(calendarComponent) {
     var timeChartComponent = this;
     var orgPoint_Time = new Date(null);
     var endPoint_Time = new Date(null);
-    let originPoint_Line;
-    let originPoint_TextBot;
-    let endPoint_Line;
-    let endPoint_TextBot;
+    let originPoint;
+    let originPoint_textBot;
 
     // =======================================
     // _____________ FUNCTIONS _______________
     // =======================================
 
     function updateOutputTime(_startTime, _endTime) {
-      if (_startTime.valueOf() != (new Date(null)).valueOf() && _endTime.valueOf() != (new Date(null)).valueOf()) {
-          calendarComponent.startTime = new Date(_startTime.toString());
-          calendarComponent.endTime = new Date(_endTime.toString());
+      if (_startTime.valueOf() != (new Date(null)).valueOf()) {
+        if (_startTime.valueOf() < _endTime.valueOf()) {
+          calendarComponent.startTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+          calendarComponent.endTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
+        } else {
+          calendarComponent.endTime = `${('0' + _startTime.getHours().toString()).slice(-2)}:${('0' + _startTime.getMinutes().toString()).slice(-2)}`;
+          calendarComponent.startTime = `${('0' + _endTime.getHours().toString()).slice(-2)}:${('0' + _endTime.getMinutes().toString()).slice(-2)}`;
+        }
       } else {
-        calendarComponent.startTime = new Date(null);
-        calendarComponent.endTime = new Date(null);
+        calendarComponent.startTime = "";
+        calendarComponent.endTime = "";
       }
     }
 
     this.reset = function () {
-      // updateOutputTime(orgPoint_Time, endPoint_Time);
-      // if(calendarComponent.startTime != "" && calendarComponent.endTime != ""){
-      //   orgPoint_Time.setHours((calendarComponent.startTime.split(":"))[0]);
-      //   orgPoint_Time.setMinutes((calendarComponent.startTime.split(":"))[1]);
-      //   endPoint_Time.setHours((calendarComponent.endTime.split(":"))[0]);
-      //   endPoint_Time.setMinutes((calendarComponent.endTime.split(":"))[1]);
-      // }
-      orgPoint_Time = new Date(calendarComponent.startTime.toString());
-      endPoint_Time = new Date(calendarComponent.endTime.toString());
-      updateInforTimeRange(calendarComponent.startTime, calendarComponent.endTime);
+      orgPoint_Time = new Date(null);
+      endPoint_Time = new Date(null);
+      updateOutputTime(orgPoint_Time, endPoint_Time);
       clearTimeChart();
       const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
       if (orgPoint_Time.valueOf() == (new Date(null)).valueOf() || endPoint_Time.valueOf() == (new Date(null)).valueOf()) {
         time_btnOK.disabled = true;
       }
-      const next_TimeBtn = timeChartComponent.parent.querySelector(".next-timebtn");
-      const prev_TimeBtn = timeChartComponent.parent.querySelector(".prev-timebtn");
-      next_TimeBtn.classList.remove("btn-disabled");
-      // next_TimeBtn.classList.add("btn-enabled");
-      // prev_TimeBtn.classList.remove("btn-enabled");
-      prev_TimeBtn.classList.add("btn-disabled");
-      let timeTittle = timeContent.querySelector(".time-date p");
-      timeTittle.textContent = `開始:${(calendarComponent.startDate.getMonth() + 1).toString()} - ${calendarComponent.startDate.getDate().toString()}`;
-      highlightTimeRange();
     }
 
     const timeContent = timeChartComponent.parent.querySelector(".time-content");
@@ -1025,24 +979,22 @@ function timeChartComponent(calendarComponent) {
           textBot.classList.add("text-select");
           line.classList.remove("line-hover-non-select");
 
-          const firstTimeText = timeChartComponent.parent.querySelector(".time-date p").textContent.split(":");
-          const time_date = firstTimeText[1].split(" - ");
-          if ((calendarComponent.startDate.getMonth() + 1).toString() == time_date[0] && calendarComponent.startDate.getDate().toString() == time_date[1] && firstTimeText[0] == "開始") {
-            orgPoint_Time = new Date(calendarComponent.startDate.toString());
+          //設定の原点ポイント
+          if (orgPoint_Time.valueOf() == 0) {
             orgPoint_Time.setHours(originTime[0]);
             orgPoint_Time.setMinutes(originTime[1]);
-            originPoint_Line = item.currentTarget.querySelector(".line");
-            originPoint_TextBot = item.currentTarget.querySelector(".text-bottom-containt");
-            highlightTimeRange();
-          }
-          if ((calendarComponent.endDate.getMonth() + 1).toString() == time_date[0] && calendarComponent.endDate.getDate().toString() == time_date[1] && firstTimeText[0] == "終了") {
-            endPoint_Time = new Date(calendarComponent.endDate.toString());
+            line.classList.add("line-select");
+            originPoint = item.currentTarget.querySelector(".line");
+            originPoint_textBot = item.currentTarget.querySelector(".text-bottom-containt");
+          } else {
+            originPoint.classList.remove("line-non-select");
+            originPoint.classList.add("line-select");
+            line.classList.remove("line-non-select");
+            line.classList.add("line-select");
+            originPoint_textBot.classList.add("text-select");
             endPoint_Time.setHours(originTime[0]);
             endPoint_Time.setMinutes(originTime[1]);
-            endPoint_Time.setFullYear(2000);
-            endPoint_Line = item.currentTarget.querySelector(".line");
-            endPoint_TextBot = item.currentTarget.querySelector(".text-bottom-containt");
-            highlightTimeRange();
+            highlightTimeRange(endPoint_Time, item);
           }
         })
       })
@@ -1067,73 +1019,27 @@ function timeChartComponent(calendarComponent) {
       });
     }
     //時間の範囲マーク
-    function highlightTimeRange() {
-      clearTimeChart();
-      const firstTimeText = timeChartComponent.parent.querySelector(".time-date p").textContent.split(":");
-      const time_date = firstTimeText[1].split(" - ");
-      if (firstTimeText[0] == "開始" && originPoint_Line != undefined) {
-        originPoint_Line.classList.remove("line-non-select");
-        originPoint_Line.classList.add("line-select");
-        originPoint_TextBot.classList.add("text-select");
-      }
-      if (firstTimeText[0] == "終了" && endPoint_Line != undefined) {
-        endPoint_Line.classList.remove("line-non-select");
-        endPoint_Line.classList.add("line-select");
-        endPoint_TextBot.classList.add("text-select");
-      }
-    }
-
-    function updateInforTimeRange(startTime, endTime) {
-      const timeInfor = timeChartComponent.parent.querySelectorAll(".time-unit");
-      if (startTime.valueOf() != (new Date(null)).valueOf() && endTime.valueOf() != (new Date(null)).valueOf()) {
-        timeInfor.forEach(item => {
-          let textBottom = item.querySelector(".text-bottom-containt").textContent.split(":");
-          var a = startTime.getHours().toString();
-          var b = startTime.getMinutes().toString();
-          var c = textBottom[0];
-          if (textBottom[0] == startTime.getHours().toString() && textBottom[1] == startTime.getMinutes().toString()) {
-            originPoint_Line = item.querySelector(".line");
-            originPoint_TextBot = item.querySelector(".text-bottom-containt");
-          }
-          if (textBottom[0] == endTime.getHours().toString() && textBottom[1] == endTime.getMinutes().toString()) {
-            endPoint_Line = item.querySelector(".line");
-            endPoint_TextBot = item.querySelector(".text-bottom-containt");
-          }
-        });
-      }
-    }
-
-    function nextDay(e) {
-      changeDay(e, e.currentTarget.closest(".time-content"), "next");
-    }
-
-    function prevDay(e) {
-      changeDay(e, e.currentTarget.closest(".time-content"), "prev");
-    }
-
-    function changeDay(e, timechart, direction) {
-      const time_date = timechart.querySelector(".time-date p");
-
-      if (direction === "next") {
-        time_date.textContent = `終了:${(calendarComponent.endDate.getMonth() + 1).toString()} - ${calendarComponent.endDate.getDate().toString()}`
-      } else {
-        time_date.textContent = `開始:${(calendarComponent.startDate.getMonth() + 1).toString()} - ${calendarComponent.startDate.getDate().toString()}`
-      }
-      const firstTimeText = time_date.textContent.split(":");
-      const time_dateText = firstTimeText[1].split(" - ");
-      const next_TimeBtn = timeChartComponent.parent.querySelector(".next-timebtn");
-      const prev_TimeBtn = timeChartComponent.parent.querySelector(".prev-timebtn");
-      if (calendarComponent.startDate != "" && calendarComponent.endDate != "") {
-        if (firstTimeText[0] == "開始") {
-          next_TimeBtn.classList.remove("btn-disabled");
-          prev_TimeBtn.classList.add("btn-disabled");
+    function highlightTimeRange(endPoint_Time, item) {
+      const timeChart = item.currentTarget.closest(".body_time");
+      const timeList = timeChart.querySelectorAll(".time-unit");
+      //背景色のクリア
+      timeList.forEach(_time => {
+        const time = _time.querySelector(".background")
+        time.classList.remove("select");
+        time.classList.add("non-select");
+      });
+      //背景色マーク
+      timeList.forEach(_time => {
+        let _Time = _time.querySelector(".text-bottom-containt").textContent.split(":");
+        let Time = new Date(null);
+        Time.setHours(_Time[0]);
+        Time.setMinutes(_Time[1]);
+        if (Time >= orgPoint_Time && Time < endPoint_Time || Time < orgPoint_Time && Time >= endPoint_Time) {
+          const time = _time.querySelector(".background")
+          time.classList.remove("non-select");
+          time.classList.add("select");
         }
-        if (firstTimeText[0] == "終了") {
-          prev_TimeBtn.classList.remove("btn-disabled");
-          next_TimeBtn.classList.add("btn-disabled");
-        }
-      }
-      highlightTimeRange();
+      });
     }
 
     var eventClickTimeButton = function () {
@@ -1155,12 +1061,6 @@ function timeChartComponent(calendarComponent) {
         calendarContent.classList.remove("calendar-hide");
         calendarContent.classList.add("calendar-show");
       })
-
-      const next_TimeBtn = timeChartComponent.parent.querySelector(".next-timebtn");
-      const prev_TimeBtn = timeChartComponent.parent.querySelector(".prev-timebtn");
-
-      next_TimeBtn.addEventListener("click", nextDay);
-      prev_TimeBtn.addEventListener("click", prevDay);
     }
     this.eventClickTimeButton = function () {
       eventClickTimeButton();

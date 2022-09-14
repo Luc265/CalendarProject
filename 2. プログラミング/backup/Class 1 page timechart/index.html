@@ -76,9 +76,9 @@
       <label for="date" style="color: white;">Date Range</label>
       <input class="date-field" id="date" type="text" readonly>
     </div>
-    <div class="time-range" style="margin-right: 100px;">
+    <div class="time-range" style="margin-right: 30px;">
       <label for="time" style="color: white;">Time Range</label>
-      <input class="time-field" style="width: 300px;" id="time" type="text" readonly>
+      <input class="time-field" id="time" type="text" readonly>
     </div>
     <!-- Trigger/Open The Modal -->
     <button id="myBtnDate" style="margin-right: 30px; width: 160px;">Open Calendar</button>
@@ -139,7 +139,7 @@
       const timeInput = document.querySelector(".time-field");
       if (calendarTime.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendarTime.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
         dateInput.value = `${calendarTime.startDate.toLocaleDateString('ja-JP', options)} - ${calendarTime.endDate.toLocaleDateString('ja-JP', options)}`;
-        timeInput.value = `${calendarTime.startTime.getHours()}:${calendarTime.startTime.getMinutes()} - ${calendarTime.endTime.getHours()}:${calendarTime.endTime.getMinutes()}`;
+        timeInput.value = `${calendarTime.startTime} - ${calendarTime.endTime}`;
       }
       modalTime.style.display = "none";
     }

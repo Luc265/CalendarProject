@@ -1,78 +1,11 @@
-div.time-tittle {
-  display: flex;
+div.time-tittle{
   padding-top: 10px;
-  width: auto;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-div.time-date {
-  position: absolute;
-  text-align: center;
-  width: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.prev-timebtn,
-.next-timebtn {
-  /* width: 34px;
-  height: 34px;
-  border-radius: 34px; */
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  box-shadow: var(--shadow-2dp);
-  background-color: var(--primary);
-  color: white;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
-
-.prev-timebtn {
-  left: 50%;
-  transform: translateX(calc(-50% - 80px));
-  /* left: 0; */
-}
-
-.next-timebtn {
-  left: 50%;
-  transform: translateX(calc(-50% + 80px));
-  /* right: 0; */
-}
-
-.btn-disabled {
-  display: none;
-}
-
-.btn-enabled {
-  display: block;
-}
-
-.move-timebtn-small {
-  width: 30px;
-  height: 30px; 
-  border-radius: 30px;
-}
-
-.move-timebtn-medium {
-  width: 36px;
-  height: 36px; 
-  border-radius: 36px;
-}
-
-.move-timebtn-big {
-  width: 50px;
-  height: 50px; 
-  border-radius: 50px;
-}
-
-div.time-main-content {
+div.time-main-content{
   top: 15%;
   position: relative;
   width: 80%;
@@ -102,31 +35,30 @@ div.time-main-content div.time-unit {
 .text-display {
   display: block;
 }
-
-.text-select {
+.text-select{
   color: blue;
 }
 
-.text-non-select {
+.text-non-select{
   color: gray;
 }
 
-div.time-main-content div.time-unit .text-top-containt {
+div.time-main-content div.time-unit .text-top-containt{
   position: absolute;
   width: auto;
   height: 20px;
-  top: 0;
+  top:0;
   text-align: center;
   left: 50%;
   transform: translateX(-50%);
   /* background-color: aqua; */
 }
 
-div.time-main-content div.time-unit .text-bottom-containt {
+div.time-main-content div.time-unit .text-bottom-containt{
   position: absolute;
   width: auto;
   height: 20px;
-  bottom: -20px;
+  bottom:-20px;
   text-align: center;
   /* transform: rotate(-45deg); */
   left: 50%;
@@ -143,7 +75,7 @@ div.time-main-content div.time-unit .background {
   height: 72%;
   width: 100%;
   left: 50%;
-}
+} 
 
 div.time-main-content div.time-unit .select {
   display: block;
@@ -153,7 +85,7 @@ div.time-main-content div.time-unit .non-select {
   display: none;
 }
 
-div.time-main-content div.time-unit .verical-line-containt {
+div.time-main-content div.time-unit .verical-line-containt{
   position: relative;
   width: 100%;
   height: calc(100% - 40px);
@@ -161,14 +93,14 @@ div.time-main-content div.time-unit .verical-line-containt {
   /* background-color:bisque; */
 }
 
-div.time-main-content div.time-unit .verical-line-containt .line {
-  position: absolute;
+div.time-main-content div.time-unit .verical-line-containt .line{
+  position: absolute; 
   /* width: 1px; */
   /* height: 100%; */
   left: 50%;
   transform: translateX(-50%);
-
-}
+ 
+} 
 
 .hour-line {
   width: 3px;
@@ -180,11 +112,11 @@ div.time-main-content div.time-unit .verical-line-containt .line {
   width: 1px;
 }
 
-.line-select {
+.line-select{
   background-color: blue;
 }
 
-.line-non-select {
+.line-non-select{
   background-color: gray;
 }
 
@@ -205,7 +137,6 @@ div.horizol-line {
   z-index: 1;
   background-color: gray;
 }
-
 .body_time {
   position: relative;
   display: flex;
@@ -213,7 +144,7 @@ div.horizol-line {
   width: 100%;
 }
 
-.calendar-footer {
+.calendar-footer{
   bottom: 0px;
   width: 100%;
   height: 60px;
@@ -224,14 +155,14 @@ div.horizol-line {
   padding: 5px;
 }
 
-.time-content {
+.time-content{
   left: 150px;
   width: 900px;
   height: 350px;
   transition: all 2s ease;
 }
 
-.time-section {
+.time-section{
   /* display: flex; */
   width: 100%;
   height: calc(100% - 60px);
@@ -250,7 +181,7 @@ div.horizol-line {
   background-color: white;
   /* Hoang: Add responsive */
   transform: translateY(-50%);
-  top: 50%;
+  top:50%;
   font-size: 90%;
 }
 
@@ -264,6 +195,6 @@ div.horizol-line {
   background-color: white;
   /* Hoang: Add responsive */
   transform: translateY(-50%);
-  top: 50%;
+  top:50%;
   font-size: 90%;
 }
