@@ -225,6 +225,7 @@ div.horizol-line {
 }
 
 .time-content {
+  border: 1px solid grey;
   left: 150px;
   width: 900px;
   height: 350px;
