@@ -15,6 +15,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
   this.endTime = moment('invalid date');
   this.OkCallback = OkCallback;
   this.returnCallback = returnCallback;
+  this.selectMode = "";
   // -Output------------------------
 
   this.refresh = function () {
@@ -185,7 +186,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
               </div>
               <div class="body_time">
               </div>
-            </div>
+            </div>     
             
           </div>
         
@@ -269,6 +270,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
 
       calendarComponent.oldDateStartPoint = moment(calendarComponent.startDate);
       calendarComponent.oldDateEndPoint = moment(calendarComponent.endDate);
+      calendarComponent.oldSelectMode = calendarComponent.selectMode;
       reLoadForSelectCell();
 
       const btn_Next_OK = calendarComponent.parent.querySelector(".btn_Next_OK");
@@ -289,7 +291,8 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     // ==================================================================
     // _________________________ OBJECTS ________________________________
     // ==================================================================
-    function updateOutputDate(_startDate, _endDate) {
+    function updateOutputDate(_startDate, _endDate, _selectMode) {
+      calendarComponent.selectMode = _selectMode;
       if (_startDate.isBefore(_endDate)) {
         calendarComponent.startDate = moment(_startDate);
         calendarComponent.endDate = moment(_endDate);
@@ -530,7 +533,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
                 const clickDate = Number(cell.querySelector(".date-text").textContent);
                 date_endPoint = moment(date_startPoint);
                 date_startPoint = moment().set({ 'year': clickYear, 'month': clickMonth, 'date': clickDate });
-                updateOutputDate(date_endPoint, date_startPoint);
+                updateOutputDate(date_endPoint, date_startPoint, "");
 
                 if (mouseClick == false) {
                   clearSelCell();
@@ -652,13 +655,27 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
         if (firstDate.toString() != calendarComponent.oldDateStartPoint.toString() && firstDate.toString() != calendarComponent.oldDateEndPoint.toString()) {
           calendarComponent.startDate = moment(calendarComponent.oldDateStartPoint);
           calendarComponent.endDate = moment(calendarComponent.oldDateEndPoint);
+          calendarComponent.selectMode = calendarComponent.oldSelectMode;
+          if(calendarComponent.selectMode == ""){
+            toolBars.forEach(toolBar => {
+              toolBar.checked = false;
+            })
+            checkmode = _mode.NormalMode;
+          }else{
+            toolBars.forEach(toolBar => {
+              if(toolBar.value == calendarComponent.selectMode){
+                toolBar.checked = true;
+              }
+            })
+            checkmode = _mode.SelectMode;
+          }
         }
-        if (checkmode == _mode.SelectMode) {
-          toolBars.forEach(toolBar => {
-            toolBar.checked = false;
-          })
-          checkmode = _mode.NormalMode;
-        }
+        // if (checkmode == _mode.SelectMode) {
+        //   toolBars.forEach(toolBar => {
+        //     toolBar.checked = false;
+        //   })
+        //   checkmode = _mode.NormalMode;
+        // }
         this.returnCallback();
       });
 
@@ -725,7 +742,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           checkmode = _mode.SelectMode;
           clearSelCell();
           checkModeSelect(toolBar, calendar);
-          updateOutputDate(date_endPoint, date_startPoint);
+          
+          if (toolBar.checked) {
+            let selectMode;
+            selectMode = toolBar.value;
+            updateOutputDate(date_endPoint, date_startPoint, selectMode);
+          }
+          
           reLoadForSelectCell();
           highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
 
@@ -765,7 +788,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       }
     }
 
-    function reLoadForSelectCell() {
+    function reLoadForSelectCell() {  
       if (date_startPoint.isValid()) {
         currMonth = new Month(calendarComponent.startDate.get('month'));
         currYear = calendarComponent.startDate.get('year');
@@ -787,8 +810,29 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           if (date_startPoint.toString() !== firstDate.toString()) { //新規状態ではないチェック
             highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
           }
+
+          if(calendarComponent.selectMode == ""){
+            toolBars.forEach(toolBar => {
+              toolBar.checked = false;
+            })
+            checkmode = _mode.NormalMode;
+          }else{
+            toolBars.forEach(toolBar => {
+              if(toolBar.value == calendarComponent.selectMode){
+                checkmode = _mode.SelectMode;
+                toolBar.checked = true;
+                clearSelCell();
+                checkModeSelect(toolBar, calendar);
+                let selectMode;
+                selectMode = toolBar.value;
+                updateOutputDate(date_endPoint, date_startPoint, selectMode);
+                highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
+                mouseClick = false;
+              }
+            });
+          }
         })
-      });
+      });  
     }
 
     // ==================================================================
@@ -814,7 +858,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
   }
 }
 
-// Time chart component
+// 1 Time chart component
 function timeChartComponent(calendarComponent) {
   this.parent = calendarComponent.parent;
   this.reLoad = function () {
@@ -847,10 +891,10 @@ function timeChartComponent(calendarComponent) {
 
     function updateOutputTime(_startTime, _endTime) {
       if (_startTime.isValid() && _endTime.isValid()) {
-        if (_startTime.isBefore(_endTime)){
+        if (_startTime.isBefore(_endTime)) {
           calendarComponent.startTime = _startTime.toDate();
           calendarComponent.endTime = _endTime.toDate();
-        }else{
+        } else {
           calendarComponent.endTime = _startTime.toDate();
           calendarComponent.startTime = _endTime.toDate();
         }
@@ -874,6 +918,7 @@ function timeChartComponent(calendarComponent) {
     const timeContent = timeChartComponent.parent.querySelector(".time-content");
 
     var drawTime = function () {
+      // const timechartContent = timeChartComponent.parent.querySelector(".time-main-content-oneTimechart");
       const timeBody = timeChartComponent.parent.querySelector(".body_time");
       let html = "";
       // Date cell creation
@@ -922,7 +967,8 @@ function timeChartComponent(calendarComponent) {
     }
 
     var addEventHover = function () {
-      const line = timeChartComponent.parent.querySelectorAll(".time-unit");
+      const timechartContent = timeChartComponent.parent.querySelector(".body_time")
+      const line = timechartContent.querySelectorAll(".time-unit");
 
       line.forEach(item => {
         item.addEventListener("mouseenter", function (item) {
@@ -1116,7 +1162,3 @@ function timeChartComponent(calendarComponent) {
   }
 }
 
-  // Only 1 time chart component
-  // function oneTimechartComponent(calendarComponent) {
-
-  // }

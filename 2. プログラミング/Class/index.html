@@ -8,25 +8,41 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="time_style.css">
-
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js" type="text/javascript"></script>
   <style>
     body {
       font-family: Arial, Helvetica, sans-serif;
     }
 
     /* The Modal (background) */
-    .modal1 {
+    .modal {
       display: none;
       position: fixed;
       z-index: 10;
-      padding-top: 100px;
-      left: 0;
-      top: 0;
+      padding: 0px 0;
+      margin-top: 3px;
+      /* padding-top: 100px; */
+      /* left: 0;
+      top: 0; */
       width: 100%;
       height: 100%;
-      overflow: auto;
+      /* overflow: auto; */
       background-color: rgb(0, 0, 0);
       background-color: rgba(0, 0, 0, 0.4);
+      width: 900px;
+      height: 350px;
+    }
+
+    .modal::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 1%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent whitesmoke transparent;
     }
 
     /* The Modal (background) */
@@ -50,8 +66,8 @@
       background-color: #fefefe;
       margin: auto;
       border: 1px solid #888;
-      width: 900px;
-      height: 350px;
+      /* width: 900px;
+      height: 350px; */
     }
 
     /* The Close Button */
@@ -76,37 +92,39 @@
       <label for="date" style="color: white;">Date Range</label>
       <input class="date-field" id="date" type="text" readonly>
     </div>
-    <div class="time-range" style="margin-right: 100px;">
+    <div class="time-range" style="margin-right: 30px;">
       <label for="time" style="color: white;">Time Range</label>
-      <input class="time-field" style="width: 300px;" id="time" type="text" readonly>
+      <input class="time-field" id="time" type="text" readonly>
     </div>
     <!-- Trigger/Open The Modal -->
-    <button id="myBtnDate" style="margin-right: 30px; width: 160px;">Open Calendar</button>
-    <button id="myBtnTime" style="width: 160px;">Open Calendar Timechart</button>
-  </div>
-  
-  <!-- The Modal -->
-  <div id="myModalDate" class="modal1">
-    <!-- Modal content -->
-    <div class="modal-content">
-      <div id="testCalendar"></div>
+    <div>
+      <button id="myBtnDate" style="margin-right: 30px; width: 160px;">Open Calendar</button>
+      <!-- The Modal -->
+      <div id="myModalDate" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <div id="testCalendar"></div>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div id="myModalDateTime" class="modal2">
-    <div class="modal-content">
-      <div id="testCalendarTime"></div>
+    
+    <div>
+      <button id="myBtnTime" style="width: 160px;">Open Calendar Timechart</button>
+      <div id="myModalDateTime" class="modal">
+        <div class="modal-content">
+          <div id="testCalendarTime"></div>
+        </div>
+      </div>
     </div>
+    
   </div>
-  
-  <script src="script.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js" type="text/javascript"></script>
   
   <script>
     // Only Date Mode
     var modal = document.getElementById("myModalDate");
     var btn = document.getElementById("myBtnDate");
     var calendar = new calendarComponent("testCalendar", 900, 350, false, OkCallback, returnCallback);
+    var dateOnlyCookieKey = "date_only";
     calendar.start();
     function OkCallback() {
       const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -116,15 +134,27 @@
         dateInput.value = `${calendar.startDate.toLocaleDateString('ja-JP', options)} - ${calendar.endDate.toLocaleDateString('ja-JP', options)}`;
         timeInput.value = `${calendar.startTime} - ${calendar.endTime}`;
       }
+      // document.cookie = `${dateOnlyCookieKey}=${calendar.selectMode}`;
+      // setCookie(dateOnlyCookieKey, calendar.selectMode, 365);
+      window.localStorage.setItem(dateOnlyCookieKey, calendar.selectMode);
       modal.style.display = "none";
     }
   
     function returnCallback() {
+      window.localStorage.setItem(dateOnlyCookieKey, calendar.selectMode);
       modal.style.display = "none";
     }
   
     btn.onclick = function () {
+      // calendar.startDate = new Date();
+      // calendar.endDate = new Date();
       modal.style.display = "block";
+      let state = window.localStorage.getItem(dateOnlyCookieKey);
+      // window.localStorage.removeItem(dateOnlyCookieKey);
+      if(state == null){
+        state = "";
+      }
+      calendar.selectMode = state;
       calendar.refresh();
     }
   
@@ -132,6 +162,7 @@
     var modalTime = document.getElementById("myModalDateTime");
     var btnTime = document.getElementById("myBtnTime");
     var calendarTime = new calendarComponent("testCalendarTime", 900, 350, true, OkCallbackTime, returnCallbackTime);
+    var dateTimeCookieKey = "date_time";
   
     calendarTime.start();
     function OkCallbackTime() {
@@ -140,17 +171,25 @@
       const timeInput = document.querySelector(".time-field");
       if (calendarTime.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendarTime.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
         dateInput.value = `${calendarTime.startDate.toLocaleDateString('ja-JP', options)} - ${calendarTime.endDate.toLocaleDateString('ja-JP', options)}`;
-        timeInput.value = `${calendarTime.startTime.getHours()}:${calendarTime.startTime.getMinutes()} - ${calendarTime.endTime.getHours()}:${calendarTime.endTime.getMinutes()}`;
+        timeInput.value = `${calendarTime.startTime} - ${calendarTime.endTime}`;
       }
+      window.localStorage.setItem(dateTimeCookieKey, calendarTime.selectMode);
       modalTime.style.display = "none";
     }
   
     function returnCallbackTime() {
+      window.localStorage.setItem(dateTimeCookieKey, calendarTime.selectMode);
       modalTime.style.display = "none";
     }
   
     btnTime.onclick = function () {
       modalTime.style.display = "block";
+      let state = window.localStorage.getItem(dateTimeCookieKey);
+      // window.localStorage.removeItem(dateTimeCookieKey);
+      if(state == null){
+        state = "";
+      }
+      calendarTime.selectMode = state;
       calendarTime.refresh();
     }
   
@@ -162,5 +201,29 @@
     //     modalTime.style.display = "none";
     //   }
     // }
+
+    // cookie (not use)
+    function setCookie(cname, cvalue, exdays) {
+      const d = new Date();
+      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+      let expires = "expires="+ d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
   </script>
 </body>
