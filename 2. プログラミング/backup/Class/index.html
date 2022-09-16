@@ -1,0 +1,166 @@
+<!-- Hoang: auto format code: Shift + Alt + F -->
+
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="time_style.css">
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* The Modal (background) */
+    .modal1 {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* The Modal (background) */
+    .modal2 {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      border: 1px solid #888;
+      width: 900px;
+      height: 350px;
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; margin-bottom: 15px;">
+    <div class="date-range" style="margin-right: 30px;">
+      <label for="date" style="color: white;">Date Range</label>
+      <input class="date-field" id="date" type="text" readonly>
+    </div>
+    <div class="time-range" style="margin-right: 100px;">
+      <label for="time" style="color: white;">Time Range</label>
+      <input class="time-field" style="width: 300px;" id="time" type="text" readonly>
+    </div>
+    <!-- Trigger/Open The Modal -->
+    <button id="myBtnDate" style="margin-right: 30px; width: 160px;">Open Calendar</button>
+    <button id="myBtnTime" style="width: 160px;">Open Calendar Timechart</button>
+  </div>
+  
+  <!-- The Modal -->
+  <div id="myModalDate" class="modal1">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div id="testCalendar"></div>
+    </div>
+  </div>
+  
+  <div id="myModalDateTime" class="modal2">
+    <div class="modal-content">
+      <div id="testCalendarTime"></div>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js" type="text/javascript"></script>
+  
+  <script>
+    // Only Date Mode
+    var modal = document.getElementById("myModalDate");
+    var btn = document.getElementById("myBtnDate");
+    var calendar = new calendarComponent("testCalendar", 900, 350, false, OkCallback, returnCallback);
+    calendar.start();
+    function OkCallback() {
+      const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+      const dateInput = document.querySelector(".date-field");
+      const timeInput = document.querySelector(".time-field");
+      if (calendar.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendar.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
+        dateInput.value = `${calendar.startDate.toLocaleDateString('ja-JP', options)} - ${calendar.endDate.toLocaleDateString('ja-JP', options)}`;
+        timeInput.value = `${calendar.startTime} - ${calendar.endTime}`;
+      }
+      modal.style.display = "none";
+    }
+  
+    function returnCallback() {
+      modal.style.display = "none";
+    }
+  
+    btn.onclick = function () {
+      modal.style.display = "block";
+      calendar.refresh();
+    }
+  
+    // DateTime Mode
+    var modalTime = document.getElementById("myModalDateTime");
+    var btnTime = document.getElementById("myBtnTime");
+    var calendarTime = new calendarComponent("testCalendarTime", 900, 350, true, OkCallbackTime, returnCallbackTime);
+  
+    calendarTime.start();
+    function OkCallbackTime() {
+      const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+      const dateInput = document.querySelector(".date-field");
+      const timeInput = document.querySelector(".time-field");
+      if (calendarTime.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendarTime.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
+        dateInput.value = `${calendarTime.startDate.toLocaleDateString('ja-JP', options)} - ${calendarTime.endDate.toLocaleDateString('ja-JP', options)}`;
+        timeInput.value = `${calendarTime.startTime.getHours()}:${calendarTime.startTime.getMinutes()} - ${calendarTime.endTime.getHours()}:${calendarTime.endTime.getMinutes()}`;
+      }
+      modalTime.style.display = "none";
+    }
+  
+    function returnCallbackTime() {
+      modalTime.style.display = "none";
+    }
+  
+    btnTime.onclick = function () {
+      modalTime.style.display = "block";
+      calendarTime.refresh();
+    }
+  
+    // window.onclick = function (event) {
+    //   if (event.target == modal) {
+    //     modal.style.display = "none";
+    //   }
+    //   if (event.target == modalTime) {
+    //     modalTime.style.display = "none";
+    //   }
+    // }
+  </script>
+</body>
