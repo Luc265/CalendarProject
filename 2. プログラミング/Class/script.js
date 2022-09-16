@@ -1,6 +1,7 @@
 // Date Calendar Component
 function calendarComponent(name, width, height, attackTimeChart, OkCallback, returnCallback) {
   moment();
+  this.timer;
   this.name = name;
   this.width = width;
   this.height = height;
@@ -17,6 +18,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
   // -Output------------------------
 
   this.refresh = function () {
+    if (this.startDate.valueOf() == (new Date(null)).valueOf() || this.endDate.valueOf() == (new Date(null)).valueOf()) {
+      this.startDate = moment('invalid date');
+      this.endDate = moment('invalid date');
+    } else {
+      this.startDate = moment(this.startDate);
+      this.endDate = moment(this.endDate);
+    }
     this.reset();
   }
 
@@ -257,6 +265,8 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       date_startPoint = moment(calendarComponent.startDate);
       date_endPoint = moment(calendarComponent.endDate);
 
+      calendarComponent.oldDateStartPoint = moment(calendarComponent.startDate);
+      calendarComponent.oldDateEndPoint = moment(calendarComponent.endDate);
       reLoadForSelectCell();
 
       const btn_Next_OK = calendarComponent.parent.querySelector(".btn_Next_OK");
@@ -373,7 +383,8 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       // For single calendar, input the div with calendar class as the arguments, for dual calendar, input the div with "dual-calendar" class as arguments.
       const cells = calendarComponent.parent.querySelectorAll(".date");
       cells.forEach(cell => {
-        cell.classList.remove("in-range");
+        cell.classList.remove("range-normalmode");
+        cell.classList.remove("range-selectmode");
       })
     }
     //currFullDate: End Point
@@ -393,7 +404,11 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           cellFullDate = moment().set({ 'year': cellYear, 'month': cellMonth, 'date': cellDate });
 
           if ((cellFullDate.startOf('day') <= date_startPoint.startOf('day') && cellFullDate.startOf('day') >= currFullDate.startOf('day')) || (cellFullDate.startOf('day') >= date_startPoint.startOf('day') && cellFullDate.startOf('day') <= currFullDate.startOf('day'))) {
-            cell.classList.add("in-range");
+            if (checkmode == _mode.NormalMode) {
+              cell.classList.add("range-normalmode");
+            } else {
+              cell.classList.add("range-selectmode");
+            }
           }
         }
       })
@@ -501,7 +516,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
                     const currDate = Number(cell.querySelector(".date-text").textContent);
                     currFullDate = moment().set({ 'year': currYear, 'month': currMonth, 'date': currDate })
                     highlightCellRange(currFullDate, calendar.closest(".dual-calendar"));
-                    cell.classList.add("in-range");
+                    cell.classList.add("range-normalmode");
                   }
                 })
               }
@@ -519,8 +534,15 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
                   clearSelCell();
                 }
 
+                if (checkmode == _mode.SelectMode) {
+                  toolBars.forEach(toolBar => {
+                    toolBar.checked = false;
+                  })
+                  checkmode = _mode.NormalMode;
+                }
+
                 mouseClick = !mouseClick
-                cell.classList.add("in-range");
+                cell.classList.add("range-normalmode");
               })
             }
           }
@@ -604,7 +626,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       }
 
       if (mouseClick == false) {  // cellを選択完了の状態
-
         if (date_startPoint.toString() !== firstDate.toString()) { //新規状態ではないチェック
           highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
         }
@@ -630,6 +651,12 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           calendarComponent.startDate = moment(calendarComponent.oldDateStartPoint);
           calendarComponent.endDate = moment(calendarComponent.oldDateEndPoint);
         }
+        if (checkmode == _mode.SelectMode) {
+          toolBars.forEach(toolBar => {
+            toolBar.checked = false;
+          })
+          checkmode = _mode.NormalMode;
+        }
         this.returnCallback();
       });
 
@@ -644,6 +671,8 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           timeContent.classList.remove("timechart-hide");
           timeContent.classList.remove("timechart-show");
         } else {
+          calendarComponent.startDate = calendarComponent.startDate.toDate();
+          calendarComponent.endDate = calendarComponent.endDate.toDate();
           this.OkCallback();
         }
       }, false)
@@ -695,11 +724,9 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           clearSelCell();
           checkModeSelect(toolBar, calendar);
           updateOutputDate(date_endPoint, date_startPoint);
+          reLoadForSelectCell();
           highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
-          toolBars.forEach(toolBar => {
-            toolBar.checked = false;
-          })
-          checkmode = _mode.NormalMode;
+
           mouseClick = false;
         })
       })
@@ -737,9 +764,6 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     }
 
     function reLoadForSelectCell() {
-      calendarComponent.oldDateStartPoint = moment(calendarComponent.startDate);
-      calendarComponent.oldDateEndPoint = moment(calendarComponent.endDate);
-
       if (date_startPoint.isValid()) {
         currMonth = new Month(calendarComponent.startDate.get('month'));
         currYear = calendarComponent.startDate.get('year');
@@ -797,6 +821,13 @@ function timeChartComponent(calendarComponent) {
     this.eventClickTimeButton();
   }
   this.refresh = function () {
+    if (calendarComponent.startTime.valueOf() == (new Date(null)).valueOf() || calendarComponent.endTime.valueOf() == (new Date(null)).valueOf()) {
+      calendarComponent.startTime = moment('invalid date');
+      calendarComponent.endTime = moment('invalid date');
+    } else {
+      calendarComponent.startTime = moment(calendarComponent.startTime);
+      calendarComponent.endTime = moment(calendarComponent.endTime);
+    }
     this.reset();
   }
   this.start = function () {
@@ -814,11 +845,11 @@ function timeChartComponent(calendarComponent) {
 
     function updateOutputTime(_startTime, _endTime) {
       if (_startTime.isValid() && _endTime.isValid()) {
-        calendarComponent.startTime = moment(_startTime);
-        calendarComponent.endTime = moment(_endTime);
+        calendarComponent.startTime = _startTime.toDate();
+        calendarComponent.endTime = _endTime.toDate();
       } else {
-        calendarComponent.startTime = moment('invalid date');
-        calendarComponent.endTime = moment('invalid date');
+        calendarComponent.startTime = new date(null);
+        calendarComponent.endTime = new date(null);
       }
     }
 
@@ -846,9 +877,9 @@ function timeChartComponent(calendarComponent) {
       const timeBody = timeChartComponent.parent.querySelector(".body_time");
       let html = "";
       // Date cell creation
-      for (i = 0; i < 24; i++) {
-        // if (i != 24) {
-        let htmlUnit = `<div class="time-unit">
+      for (i = 0; i < 25; i++) {
+        if (i != 24) {
+          let htmlUnit = `<div class="time-unit">
             <div class="text-top-containt text-hide"><b>${i}:00</b></div>
             <div class="verical-line-containt"> 
                 <div class="line hour-line line-non-select">
@@ -868,9 +899,22 @@ function timeChartComponent(calendarComponent) {
                 </div>
                 <div class="text-bottom-containt text-hide">${i}:30</div>
             </div>`
-        html = html + htmlUnit;
+          html = html + htmlUnit;
+        } else {
+          let htmlUnit = `<div class="time-unit">
+            <div class="text-top-containt text-hide"><b>${i}:00</b></div>
+            <div class="verical-line-containt"> 
+                <div class="line hour-line line-non-select">
+      
+                </div>
+                <div class="background non-select"></div>
+            </div>
+            <div class="text-bottom-containt">${i}:00</div>
+            </div>`
+          html = html + htmlUnit;
+        }
+        timeBody.innerHTML = html;
       }
-      timeBody.innerHTML = html;
     }
     // this.drawTime = drawTime();
     this.drawTime = function () {
@@ -1016,7 +1060,7 @@ function timeChartComponent(calendarComponent) {
             endPoint_TextBot = item.querySelector(".text-bottom-containt");
           }
         });
-      }else{
+      } else {
         originPoint_Line = undefined;
         originPoint_TextBot = undefined;
         endPoint_Line = undefined;
@@ -1064,6 +1108,8 @@ function timeChartComponent(calendarComponent) {
 
       time_btnOK.addEventListener("click", function (e) {
         updateOutputTime(orgPoint_Time, endPoint_Time);
+        calendarComponent.startDate = calendarComponent.startDate.toDate();
+        calendarComponent.endDate = calendarComponent.endDate.toDate();
         calendarComponent.OkCallback();
         timeContent.classList.remove("timechart-show");
         timeContent.classList.add("timechart-hide");
@@ -1091,10 +1137,19 @@ function timeChartComponent(calendarComponent) {
     // ________________________ LISTENERS _______________________________
     // ==================================================================
     setInterval(function () {
-      if (orgPoint_Time.isValid() && endPoint_Time.isValid() && calendarComponent.startDate.isValid() && calendarComponent.endDate.isValid()) {
-        const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
-        time_btnOK.disabled = false;
+      if (calendarComponent.startDate instanceof moment || calendarComponent.endDate instanceof moment) {
+        if (orgPoint_Time.isValid() && endPoint_Time.isValid() && calendarComponent.startDate.isValid() && calendarComponent.endDate.isValid()) {
+          const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
+          time_btnOK.disabled = false;
+        }
+      } else {
+        return;
       }
     }, 20)
   }
 }
+
+  // Only 1 time chart component
+  // function oneTimechartComponent(calendarComponent) {
+
+  // }

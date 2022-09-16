@@ -112,9 +112,9 @@
       const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
       const dateInput = document.querySelector(".date-field");
       const timeInput = document.querySelector(".time-field");
-      if (calendar.startDate.isValid() && calendar.endDate.isValid()) {
-        dateInput.value = `${calendar.startDate.format('YYYY:MM:DD')} - ${calendar.endDate.format('YYYY:MM:DD')}`;
-        timeInput.value = `${calendar.startTime.format('hh:mm')} - ${calendar.endTime.format('hh:mm')}`;
+      if (calendar.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendar.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
+        dateInput.value = `${calendar.startDate.toLocaleDateString('ja-JP', options)} - ${calendar.endDate.toLocaleDateString('ja-JP', options)}`;
+        timeInput.value = `${calendar.startTime} - ${calendar.endTime}`;
       }
       modal.style.display = "none";
     }
@@ -138,9 +138,9 @@
       const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
       const dateInput = document.querySelector(".date-field");
       const timeInput = document.querySelector(".time-field");
-      if (calendarTime.startDate.isValid() && calendarTime.endDate.isValid()) {
-        dateInput.value = `${calendarTime.startDate.format('YYYY:MM:DD')} - ${calendarTime.endDate.format('YYYY:MM:DD')}`;
-        timeInput.value = `${calendarTime.startTime.format('HH:mm')} - ${calendarTime.endTime.format('HH:mm')}`;
+      if (calendarTime.startDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf() && calendarTime.endDate.valueOf() != (new Date(0, 0, 0, 0)).valueOf()) {
+        dateInput.value = `${calendarTime.startDate.toLocaleDateString('ja-JP', options)} - ${calendarTime.endDate.toLocaleDateString('ja-JP', options)}`;
+        timeInput.value = `${calendarTime.startTime.getHours()}:${calendarTime.startTime.getMinutes()} - ${calendarTime.endTime.getHours()}:${calendarTime.endTime.getMinutes()}`;
       }
       modalTime.style.display = "none";
     }

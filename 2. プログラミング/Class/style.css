@@ -3,6 +3,7 @@
     --primary-md: #42A5F5;
     --primary-lt: #64B5F6;
     --primary-lightest: #E3F2FD;
+    --primary-selectlightest: rgba(147, 250, 165);
     --secondary: #FF6F00;
     --gray-200: #EEEEEE;
     --gray-300: #E0E0E0;
@@ -410,9 +411,20 @@
     transform: translate(-50%, -50%) scale(1);
   }
 
-  .date.in-range .date-ripple {
+  /* .date.in-range .date-ripple {
     background-color: var(--primary-lightest);
     transform: translate(-50%, -50%) scale(1);
+  } */
+
+  .date.range-normalmode .date-ripple {
+    background-color: var(--primary-lightest);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .date.range-selectmode .date-ripple {
+    background-color: var(--primary-selectlightest);
+    transform: translate(-50%, -50%) scale(1);
+    /* opacity: 0.3; */
   }
 
   .date.selected .date-ripple {
