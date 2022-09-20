@@ -167,27 +167,35 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       htmlContent += `<!-- 時間表示 -->
         <div class="time-content timechart-hide">
           <div class="time-section">
-            <div class="time-tittle">
 
-              <div class="prev-timebtn">
-                <i class="material-icons">keyboard_arrow_left</i>
-              </div>
+            <div class="time-tittle">
               <div class="time-date">
                 <p><b>3/4</b></p>
               </div>
-              <div class="next-timebtn">
-                <i class="material-icons">keyboard_arrow_right</i>
-              </div>
-
             </div>
 
-            <div class="time-main-content">
+            <div class="time-main-Content-one">
               <div class="horizol-line">
               </div>
-              <div class="body_time">
+              <div class="body-time">
               </div>
-            </div>     
-            
+            </div>   
+  
+            <div class="time-main-Content-two">
+              <div class="firstTimechart">
+                <div class="horizol-line-firstTimechart">
+                </div>
+                <div class="body-time-firstTimechart">
+                </div>
+              </div>
+              <div class="secondTimechart">
+                <div class="horizol-line-secondTimechart">
+                </div>
+                <div class="body-time-secondTimechart">
+                </div>
+              </div>
+            </div>           
+
           </div>
         
           <div class="calendar-footer">
@@ -198,9 +206,9 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
             <div class="calendar_button">
               <button class="time_btn_Return">Return</button>
               <button class="time_btn_OK">OK</button>
-            </div>
-    
+            </div>   
           </div>
+
         </div>`
     }
 
@@ -226,10 +234,14 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
     this.addHtml();
     // add timeChart
     if (this.attackTimeChart == true) {
-      var timeChart = new timeChartComponent(this)
+      var timeChart = new timeChartComponent(this);
+      var twoTimechart = new twoTimechartComponent(this);
       this.timeChart = timeChart;
+      this.twoTimechart = twoTimechart;
       this.timeChart.start();
       this.timeChart.reLoad();
+      this.twoTimechart.start();
+      this.twoTimechart.reLoad();
     }
 
     // Time variable queries.
@@ -283,9 +295,10 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       } else {
         btn_Next_OK.disabled = true;
       }
-      if (calendarComponent.attackTimeChart == true) {
-        calendarComponent.timeChart.refresh();
-      }
+      // if (calendarComponent.attackTimeChart == true) {
+      //   calendarComponent.timeChart.refresh();
+      //   calendarComponent.twoTimechart.refresh();
+      // }
     }
 
     // ==================================================================
@@ -656,26 +669,20 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           calendarComponent.startDate = moment(calendarComponent.oldDateStartPoint);
           calendarComponent.endDate = moment(calendarComponent.oldDateEndPoint);
           calendarComponent.selectMode = calendarComponent.oldSelectMode;
-          if(calendarComponent.selectMode == ""){
+          if (calendarComponent.selectMode == "") {
             toolBars.forEach(toolBar => {
               toolBar.checked = false;
             })
             checkmode = _mode.NormalMode;
-          }else{
+          } else {
             toolBars.forEach(toolBar => {
-              if(toolBar.value == calendarComponent.selectMode){
+              if (toolBar.value == calendarComponent.selectMode) {
                 toolBar.checked = true;
               }
             })
             checkmode = _mode.SelectMode;
           }
         }
-        // if (checkmode == _mode.SelectMode) {
-        //   toolBars.forEach(toolBar => {
-        //     toolBar.checked = false;
-        //   })
-        //   checkmode = _mode.NormalMode;
-        // }
         this.returnCallback();
       });
 
@@ -686,9 +693,24 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           calendarContent.classList.remove("calendar-show");
           calendarContent.classList.add("calendar-hide");
           const timeContent = calendarComponent.parent.querySelector(".time-content");
-          timeChart.refresh();
+          const mainTimeOne = calendarComponent.parent.querySelector(".time-main-Content-one");
+          const mainTimeTwo = calendarComponent.parent.querySelector(".time-main-Content-two");
           timeContent.classList.remove("timechart-hide");
           timeContent.classList.remove("timechart-show");
+          if (calendarComponent.startDate.startOf('date').isSame(calendarComponent.endDate.startOf('date'))) {
+            timeChart.refresh();
+            mainTimeOne.classList.remove("hide");
+            mainTimeTwo.classList.remove("show");
+            mainTimeTwo.classList.add("hide");
+            mainTimeOne.classList.add("show");
+          } else {
+            twoTimechart.refresh();
+            mainTimeTwo.classList.remove("hide");
+            mainTimeOne.classList.remove("show");
+            mainTimeOne.classList.add("hide");
+            mainTimeTwo.classList.add("show");
+          }
+
         } else {
           calendarComponent.startDate = calendarComponent.startDate.toDate();
           calendarComponent.endDate = calendarComponent.endDate.toDate();
@@ -742,13 +764,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
           checkmode = _mode.SelectMode;
           clearSelCell();
           checkModeSelect(toolBar, calendar);
-          
+
           if (toolBar.checked) {
             let selectMode;
             selectMode = toolBar.value;
             updateOutputDate(date_endPoint, date_startPoint, selectMode);
           }
-          
+
           reLoadForSelectCell();
           highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
 
@@ -788,7 +810,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
       }
     }
 
-    function reLoadForSelectCell() {  
+    function reLoadForSelectCell() {
       if (date_startPoint.isValid()) {
         currMonth = new Month(calendarComponent.startDate.get('month'));
         currYear = calendarComponent.startDate.get('year');
@@ -811,14 +833,14 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
             highlightCellRange(date_endPoint, calendar.closest(".dual-calendar"));
           }
 
-          if(calendarComponent.selectMode == ""){
+          if (calendarComponent.selectMode == "") {
             toolBars.forEach(toolBar => {
               toolBar.checked = false;
             })
             checkmode = _mode.NormalMode;
-          }else{
+          } else {
             toolBars.forEach(toolBar => {
-              if(toolBar.value == calendarComponent.selectMode){
+              if (toolBar.value == calendarComponent.selectMode) {
                 checkmode = _mode.SelectMode;
                 toolBar.checked = true;
                 clearSelCell();
@@ -832,7 +854,7 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
             });
           }
         })
-      });  
+      });
     }
 
     // ==================================================================
@@ -905,27 +927,27 @@ function timeChartComponent(calendarComponent) {
     }
 
     this.reset = function () {
-      orgPoint_Time = new moment('invalid date');
-      endPoint_Time = new moment('invalid date');
       updateInforTimeRange(orgPoint_Time, endPoint_Time);
       clearTimeChart();
       const time_btnOK = timeChartComponent.parent.querySelector(".time_btn_OK");
       if (!orgPoint_Time.isValid() || !endPoint_Time.isValid()) {
         time_btnOK.disabled = true;
       }
+      let timeTittle = calendarComponent.parent.querySelector(".time-date p");
+      timeTittle.textContent = `${(calendarComponent.startDate.get('month') + 1).toString()} - ${(calendarComponent.startDate.get('date')).toString()}`
     }
 
     const timeContent = timeChartComponent.parent.querySelector(".time-content");
 
     var drawTime = function () {
-      // const timechartContent = timeChartComponent.parent.querySelector(".time-main-content-oneTimechart");
-      const timeBody = timeChartComponent.parent.querySelector(".body_time");
+      const timechartContent = timeChartComponent.parent.querySelector(".time-main-Content-one");
+      const timeBody = timechartContent.querySelector(".body-time");
       let html = "";
       // Date cell creation
       for (i = 0; i < 25; i++) {
         if (i != 24) {
           let htmlUnit = `<div class="time-unit">
-            <div class="text-top-containt text-hide"><b>${i}:00</b></div>
+            <div class="text-top-containt text-hide"><b>${i}:00</b></div> 
             <div class="verical-line-containt"> 
                 <div class="line hour-line line-non-select">
       
@@ -967,7 +989,7 @@ function timeChartComponent(calendarComponent) {
     }
 
     var addEventHover = function () {
-      const timechartContent = timeChartComponent.parent.querySelector(".body_time")
+      const timechartContent = timeChartComponent.parent.querySelector(".body-time")
       const line = timechartContent.querySelectorAll(".time-unit");
 
       line.forEach(item => {
@@ -1011,7 +1033,7 @@ function timeChartComponent(calendarComponent) {
         })
 
         item.addEventListener("click", function (item) {
-          const timeChart = item.currentTarget.closest(".body_time");
+          const timeChart = item.currentTarget.closest(".body-time");
           const timeChart_Unit = timeChart.querySelectorAll(".time-unit");
           //全てのラインとテキストボトムの色をクリア
           timeChart_Unit.forEach(Item => {
@@ -1028,6 +1050,12 @@ function timeChartComponent(calendarComponent) {
             }
           })
 
+          if(orgPoint_Time.isValid() && endPoint_Time.isValid()){
+            orgPoint_Time = moment('invalid date');
+            endPoint_Time = moment('invalid date');
+            clearTimeChart();
+          }
+
           let originTime = item.currentTarget.querySelector(".text-bottom-containt").textContent.split(":");
           const textTop = item.currentTarget.querySelector(".text-top-containt");
           const textBot = item.currentTarget.querySelector(".text-bottom-containt");
@@ -1036,10 +1064,11 @@ function timeChartComponent(calendarComponent) {
           textTop.classList.add("text-hide");
           textBot.classList.add("text-select");
           line.classList.remove("line-hover-non-select");
-
+          
           if (!orgPoint_Time.isValid()) {
             orgPoint_Time = moment(calendarComponent.startDate);
             orgPoint_Time.set({ 'hour': Number(originTime[0]), 'minute': Number(originTime[1]) });
+            line.classList.remove("line-non-select");
             line.classList.add("line-select");
             originPoint_Line = item.currentTarget.querySelector(".line");
             originPoint_textBot = item.currentTarget.querySelector(".text-bottom-containt");
@@ -1053,6 +1082,7 @@ function timeChartComponent(calendarComponent) {
             endPoint_Time.set({ 'hour': originTime[0], 'minute': originTime[1] });
             highlightTimeRange(orgPoint_Time, endPoint_Time);
           }
+
         })
       })
     }
@@ -1077,7 +1107,7 @@ function timeChartComponent(calendarComponent) {
     }
     //時間の範囲マーク
     function highlightTimeRange(originTime, endTime) {
-      const timeChart = timeChartComponent.parent.querySelector(".body_time");
+      const timeChart = timeChartComponent.parent.querySelector(".body-time");
       const timeList = timeChart.querySelectorAll(".time-unit");
 
       timeList.forEach(_time => {
@@ -1125,15 +1155,22 @@ function timeChartComponent(calendarComponent) {
       const time_btnReturn = timeChartComponent.parent.querySelector(".time_btn_Return");
       const calendarContent = timeChartComponent.parent.querySelector(".calendar-content");
 
+
       time_btnOK.addEventListener("click", function (e) {
-        updateOutputTime(orgPoint_Time, endPoint_Time);
-        calendarComponent.startDate = calendarComponent.startDate.toDate();
-        calendarComponent.endDate = calendarComponent.endDate.toDate();
-        calendarComponent.OkCallback();
-        timeContent.classList.remove("timechart-show");
-        timeContent.classList.add("timechart-hide");
-        calendarContent.classList.remove("calendar-hide");
-        calendarContent.classList.add("calendar-show");
+        const checkTimeChart = calendarComponent.parent.querySelector(".time-main-Content-one.show");
+        if (checkTimeChart != null) {
+          updateOutputTime(orgPoint_Time, endPoint_Time);
+          calendarComponent.startDate = calendarComponent.startDate.toDate();
+          calendarComponent.endDate = calendarComponent.endDate.toDate();
+          calendarComponent.OkCallback();
+          timeContent.classList.remove("timechart-show");
+          timeContent.classList.add("timechart-hide");
+          calendarContent.classList.remove("calendar-hide");
+          calendarContent.classList.add("calendar-show");
+        } else {
+          return;
+        }
+
       })
       time_btnReturn.addEventListener("click", function (e) {
         timeContent.classList.remove("timechart-show");
@@ -1162,3 +1199,294 @@ function timeChartComponent(calendarComponent) {
   }
 }
 
+// 2 TimerChart
+function twoTimechartComponent(calendarComponent) {
+  this.parent = calendarComponent.parent;
+  this.reLoad = function () {
+    this.drawTime();
+    this.addEventHover();
+    this.eventClickTimeButton();
+  }
+  this.refresh = function () {
+    if (calendarComponent.startTime.valueOf() == (new Date(null)).valueOf() || calendarComponent.endTime.valueOf() == (new Date(null)).valueOf()) {
+      calendarComponent.startTime = moment('invalid date');
+      calendarComponent.endTime = moment('invalid date');
+    } else {
+      calendarComponent.startTime = moment(calendarComponent.startTime);
+      calendarComponent.endTime = moment(calendarComponent.endTime);
+    }
+    this.reset();
+  }
+  this.start = function () {
+    var twoTimechartComponent = this;
+    var orgPoint_Time = moment('invalid date');
+    var endPoint_Time = moment('invalid date');
+
+    // =======================================
+    // _____________ FUNCTIONS _______________
+    // =======================================
+
+    function updateOutputTime(_startTime, _endTime) {
+      if (_startTime.isValid() && _endTime.isValid()) {
+        if (_startTime.isBefore(_endTime)) {
+          calendarComponent.startTime = _startTime.toDate();
+          calendarComponent.endTime = _endTime.toDate();
+        } else {
+          calendarComponent.endTime = _startTime.toDate();
+          calendarComponent.startTime = _endTime.toDate();
+        }
+      } else {
+        calendarComponent.startTime = new date(null);
+        calendarComponent.endTime = new date(null);
+      }
+    }
+
+    this.reset = function () {
+      if (calendarComponent.startTime.isValid() && calendarComponent.endTime.isValid()) {
+        const firstTimechart = twoTimechartComponent.parent.querySelector(".body-time-firstTimechart");
+        const secondTimechart = twoTimechartComponent.parent.querySelector(".body-time-secondTimechart");
+        orgPoint_Time = moment(calendarComponent.startTime);
+        endPoint_Time = moment(calendarComponent.endTime);
+        highlightTimeRange(orgPoint_Time, firstTimechart);
+        highlightTimeRange(endPoint_Time, secondTimechart);
+      }
+      const time_btnOK = twoTimechartComponent.parent.querySelector(".time_btn_OK");
+      if (!orgPoint_Time.isValid() || !endPoint_Time.isValid()) {
+        time_btnOK.disabled = true;
+      }
+      let timeTittle = calendarComponent.parent.querySelector(".time-date p");
+      timeTittle.textContent = `${(calendarComponent.startDate.get('month') + 1).toString()}/${(calendarComponent.startDate.get('date')).toString()} ~ ${(calendarComponent.endDate.get('month') + 1).toString()}/${(calendarComponent.endDate.get('date')).toString()}`
+    }
+
+    const timeContent = twoTimechartComponent.parent.querySelector(".time-content");
+
+    var drawTime = function () {
+      const timechartContent = twoTimechartComponent.parent.querySelector(".time-main-Content-two");
+      const firstTimeBody = timechartContent.querySelector(".body-time-firstTimechart");
+      const secondTimeBody = timechartContent.querySelector(".body-time-secondTimechart");
+      let html = "";
+      // Date cell creation
+      for (i = 0; i < 25; i++) {
+        if (i != 24) {
+          let htmlUnit = `<div class="time-unit">
+            <div class="text-top-containt text-hide"><b>${i}:00</b></div> 
+            <div class="verical-line-containt"> 
+                <div class="line hour-line line-non-select">
+      
+                </div>
+                <div class="background non-select"></div>
+            </div>
+            <div class="text-bottom-containt">${i}:00</div>
+            </div>   
+            <div class="time-unit">
+                <div class="text-top-containt text-hide"><b>${i}:30</b></div>
+                <div class="verical-line-containt"> 
+                    <div class="line minute-line line-non-select">
+        
+                    </div>
+                    <div class="background non-select"></div>
+                </div>
+                <div class="text-bottom-containt text-hide">${i}:30</div>
+            </div>`
+          html = html + htmlUnit;
+        } else {
+          let htmlUnit = `<div class="time-unit">
+            <div class="text-top-containt text-hide"><b>${i}:00</b></div>
+            <div class="verical-line-containt"> 
+                <div class="line hour-line line-non-select">
+      
+                </div>
+                <div class="background non-select"></div>
+            </div>
+            <div class="text-bottom-containt">${i}:00</div>
+            </div>`
+          html = html + htmlUnit;
+        }
+        firstTimeBody.innerHTML = html;
+        secondTimeBody.innerHTML = html;
+      }
+    }
+    // this.drawTime = drawTime();
+    this.drawTime = function () {
+      drawTime();
+    }
+
+    var addEventHover = function () {
+      const timechartContent = twoTimechartComponent.parent.querySelector(".time-main-Content-two")
+
+      const firstTimechart = timechartContent.querySelectorAll(".body-time-firstTimechart .time-unit");
+      const secondTimechart = timechartContent.querySelectorAll(".body-time-secondTimechart .time-unit");
+      const totalLine = timechartContent.querySelectorAll(".time-unit");
+
+      totalLine.forEach(item => {
+        item.addEventListener("mouseenter", function (item) {
+          const textTop = item.target.querySelector(".text-top-containt");
+          // const textBot = this.item.querySelector(".text-bottom-containt");
+          const lineNonSelect = item.target.querySelector(".line.line-non-select");
+          const lineSelect = item.target.querySelector(".line.line-select");
+
+          if (lineNonSelect != undefined) {
+            lineNonSelect.classList.add("line-hover-non-select");
+            lineNonSelect.classList.remove("line-non-select");
+          }
+
+          if (lineSelect != undefined) {
+            lineSelect.classList.add("line-hover-select");
+            lineSelect.classList.remove("line-select");
+          }
+
+          textTop.classList.remove("text-hide");
+          textTop.classList.add("text-display");
+        })
+
+        item.addEventListener("mouseleave", function (item) {
+          let textTop = item.target.querySelector(".text-top-containt");
+          let lineNonSelect = item.target.querySelector(".line.line-hover-non-select");
+          let lineSelect = item.target.querySelector(".line.line-hover-select");
+
+          if (lineNonSelect != undefined) {
+            lineNonSelect.classList.remove("line-hover-non-select");
+            lineNonSelect.classList.add("line-non-select");
+          }
+
+          if (lineSelect != undefined) {
+            lineSelect.classList.remove("line-hover-select");
+            lineSelect.classList.add("line-select");
+          }
+
+          textTop.classList.add("text-hide");
+          textTop.classList.remove("text-display");
+        })
+      })
+
+      firstTimechart.forEach(item => {
+        item.addEventListener("click", function (item) {
+          const timeChart = item.currentTarget.closest(".body-time-firstTimechart");
+
+          let originTime = item.currentTarget.querySelector(".text-bottom-containt").textContent.split(":");
+          const textTop = item.currentTarget.querySelector(".text-top-containt");
+          const textBot = item.currentTarget.querySelector(".text-bottom-containt");
+          // const line = item.currentTarget.querySelector(".line");
+          textTop.classList.remove("text-display");
+          textTop.classList.add("text-hide");
+          textBot.classList.add("text-select");
+          orgPoint_Time = moment(calendarComponent.startDate);
+          orgPoint_Time.set({ 'hour': Number(originTime[0]), 'minute': Number(originTime[1]) });
+
+          if (Number(originTime[0]) != 24) {
+            highlightTimeRange(orgPoint_Time, timeChart);
+          } else {
+            clearTimeChart(timeChart);
+            let line = item.currentTarget.querySelector(".line");
+            let textBot = item.currentTarget.querySelector(".text-bottom-containt");
+            line.classList.remove("line-non-select");
+            line.classList.add("line-select");
+            textBot.classList.add("text-select");
+          }
+        })
+      })
+
+      secondTimechart.forEach(item => {
+        item.addEventListener("click", function (item) {
+          const timeChart = item.currentTarget.closest(".body-time-secondTimechart");
+
+          let endTime = item.currentTarget.querySelector(".text-bottom-containt").textContent.split(":");
+          const textTop = item.currentTarget.querySelector(".text-top-containt");
+          const textBot = item.currentTarget.querySelector(".text-bottom-containt");
+          // const line = item.currentTarget.querySelector(".line");
+          textTop.classList.remove("text-display");
+          textTop.classList.add("text-hide");
+          textBot.classList.add("text-select");
+          endPoint_Time = moment(calendarComponent.endDate);
+          endPoint_Time.set({ 'hour': Number(endTime[0]), 'minute': Number(endTime[1]) });
+
+          if (Number(endTime[0]) != 24) {
+            highlightTimeRange(endPoint_Time, timeChart);
+          } else {
+            clearTimeChart(timeChart);
+            let line = item.currentTarget.querySelector(".line");
+            let textBot = item.currentTarget.querySelector(".text-bottom-containt");
+            line.classList.remove("line-non-select");
+            line.classList.add("line-select");
+            textBot.classList.add("text-select");
+          }
+        })
+      })
+    }
+
+    this.addEventHover = function () {
+      addEventHover();
+    }
+
+    function clearTimeChart(timechart) {
+      const timeList = timechart.querySelectorAll(".time-unit");
+      //背景色のクリア
+      timeList.forEach(_time => {
+        const line = _time.querySelector(".line");
+        const textBottom = _time.querySelector(".text-bottom-containt");
+        line.classList.remove("line-select");
+        line.classList.remove("line-hover-non-select");
+        line.classList.add("line-non-select");
+        textBottom.classList.remove("text-select");
+      });
+    }
+    //時間の範囲マーク
+    function highlightTimeRange(time, timechart) {
+      clearTimeChart(timechart);
+      const timeChart_Unit = timechart.querySelectorAll(".time-unit");
+
+      let currTime = moment(time);
+      timeChart_Unit.forEach(item => {
+        let currTextTime = item.querySelector(".text-bottom-containt").textContent.split(":");
+        currTime.set({ 'hour': Number(currTextTime[0]), 'minute': Number(currTextTime[1]), 'second': 0 });
+        if (currTime.endOf('minute').isSame(time.endOf('minute'))) {
+          let line = item.querySelector(".line");
+          let textBot = item.querySelector(".text-bottom-containt");
+          line.classList.remove("line-non-select");
+          line.classList.add("line-select");
+          textBot.classList.add("text-select");
+        }
+      });
+    }
+
+    var eventClickTimeButton = function () {
+      const time_btnOK = twoTimechartComponent.parent.querySelector(".time_btn_OK");
+      const time_btnReturn = twoTimechartComponent.parent.querySelector(".time_btn_Return");
+      const calendarContent = twoTimechartComponent.parent.querySelector(".calendar-content");
+
+      time_btnOK.addEventListener("click", function (e) {
+        const checkTimeChart = twoTimechartComponent.parent.querySelector(".time-main-Content-two.show");
+        if (checkTimeChart != null) {
+          updateOutputTime(orgPoint_Time, endPoint_Time);
+          calendarComponent.startDate = calendarComponent.startDate.toDate();
+          calendarComponent.endDate = calendarComponent.endDate.toDate();
+          calendarComponent.OkCallback();
+          timeContent.classList.remove("timechart-show");
+          timeContent.classList.add("timechart-hide");
+          calendarContent.classList.remove("calendar-hide");
+          calendarContent.classList.add("calendar-show");
+        } else {
+          return;
+        }
+      })
+    }
+
+    this.eventClickTimeButton = function () {
+      eventClickTimeButton();
+    }
+
+    // ==================================================================
+    // ________________________ LISTENERS _______________________________
+    // ==================================================================
+    setInterval(function () {
+      if (calendarComponent.startDate instanceof moment || calendarComponent.endDate instanceof moment) {
+        if (orgPoint_Time.isValid() && endPoint_Time.isValid() && calendarComponent.startDate.isValid() && calendarComponent.endDate.isValid()) {
+          const time_btnOK = twoTimechartComponent.parent.querySelector(".time_btn_OK");
+          time_btnOK.disabled = false;
+        }
+      } else {
+        return;
+      }
+    }, 20)
+  }
+}

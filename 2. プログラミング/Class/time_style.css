@@ -72,7 +72,7 @@ div.time-date {
   border-radius: 50px;
 }
 
-div.time-main-content {
+div.time-main-Content-one {
   top: 15%;
   position: relative;
   width: 80%;
@@ -89,7 +89,7 @@ div.time-main-content {
   display: flex;
 }
 
-div.time-main-content div.time-unit {
+div.time-main-Content-one div.time-unit {
   position: relative;
   width: calc(100% / 10);
   height: 100%;
@@ -111,7 +111,7 @@ div.time-main-content div.time-unit {
   color: gray;
 }
 
-div.time-main-content div.time-unit .text-top-containt {
+div.time-main-Content-one div.time-unit .text-top-containt {
   position: absolute;
   width: auto;
   height: 20px;
@@ -122,7 +122,7 @@ div.time-main-content div.time-unit .text-top-containt {
   /* background-color: aqua; */
 }
 
-div.time-main-content div.time-unit .text-bottom-containt {
+div.time-main-Content-one div.time-unit .text-bottom-containt {
   position: absolute;
   width: auto;
   height: 20px;
@@ -135,7 +135,7 @@ div.time-main-content div.time-unit .text-bottom-containt {
   /* background-color: aqua; */
 }
 
-div.time-main-content div.time-unit .background {
+div.time-main-Content-one div.time-unit .background {
   position: absolute;
   z-index: -1;
   background-color: aqua;
@@ -145,15 +145,15 @@ div.time-main-content div.time-unit .background {
   left: 50%;
 }
 
-div.time-main-content div.time-unit .select {
+div.time-main-Content-one div.time-unit .select {
   display: block;
 }
 
-div.time-main-content div.time-unit .non-select {
+div.time-main-Content-one div.time-unit .non-select {
   display: none;
 }
 
-div.time-main-content div.time-unit .verical-line-containt {
+div.time-main-Content-one div.time-unit .verical-line-containt {
   position: relative;
   width: 100%;
   height: calc(100% - 40px);
@@ -161,7 +161,7 @@ div.time-main-content div.time-unit .verical-line-containt {
   /* background-color:bisque; */
 }
 
-div.time-main-content div.time-unit .verical-line-containt .line {
+div.time-main-Content-one div.time-unit .verical-line-containt .line {
   position: absolute;
   /* width: 1px; */
   /* height: 100%; */
@@ -206,7 +206,7 @@ div.horizol-line {
   background-color: gray;
 }
 
-.body_time {
+.body-time {
   position: relative;
   display: flex;
   height: 100%;

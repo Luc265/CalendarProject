@@ -1,0 +1,122 @@
+div.time-main-Content-two {
+    top: 18%;
+    position: relative;
+    width: 80%;
+    height: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+div.time-main-Content-two .firstTimechart {
+    height: 50%;
+    width: 100%;
+}
+
+div.time-main-Content-two .secondTimechart {
+    height: 50%;
+    width: 100%;
+}
+
+div.firstTimechart .horizol-line-firstTimechart {
+    position: absolute;
+    top: 50px;
+    height: 1px;
+    width: 100%;
+    z-index: 1;
+    background-color: gray;
+}
+
+.body-time-firstTimechart {
+    position: relative;
+    display: flex;
+    height: 80%;
+    width: 100%;
+}
+
+div.secondTimechart .horizol-line-secondTimechart {
+    position: absolute;
+    bottom: 50px;
+    height: 1px;
+    width: 100%;
+    z-index: 1;
+    background-color: gray;
+}
+
+.body-time-secondTimechart {
+    position: relative;
+    display: flex;
+    height: 80%;
+    width: 100%;
+}
+
+div.time-main-Content-two div.time-unit {
+    position: relative;
+    width: calc(100% / 10);
+    height: 100%;
+}
+
+div.time-main-Content-two div.time-unit .text-top-containt {
+    position: absolute;
+    width: auto;
+    height: 20px;
+    top: 0;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    /* background-color: aqua; */
+}
+
+div.time-main-Content-two div.time-unit .text-bottom-containt {
+    position: absolute;
+    width: auto;
+    height: 20px;
+    bottom: -10px;
+    text-align: center;
+    /* transform: rotate(-45deg); */
+    left: 50%;
+    transform: translateX(-50%) rotate(-45deg);
+    font-size: 80%;
+    /* background-color: aqua; */
+}
+
+div.time-main-Content-two div.time-unit .background {
+    position: absolute;
+    z-index: -1;
+    background-color: aqua;
+    opacity: 20%;
+    height: 72%;
+    width: 100%;
+    left: 50%;
+}
+
+div.time-main-Content-two div.time-unit .select {
+    display: block;
+}
+
+div.time-main-Content-two div.time-unit .non-select {
+    display: none;
+}
+
+div.time-main-Content-two div.time-unit .verical-line-containt {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 38px);
+    margin-top: 20px;
+    /* background-color:bisque; */
+}
+
+div.time-main-Content-two div.time-unit .verical-line-containt .line {
+    position: absolute;
+    /* width: 1px; */
+    /* height: 100%; */
+    left: 50%;
+    transform: translateX(-50%);
+}
