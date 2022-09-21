@@ -7,13 +7,13 @@ div.time-tittle {
   transform: translateX(-50%);
 }
 
-div.time-date {
+/* div.time-date {
   position: absolute;
   text-align: center;
   width: 120px;
   left: 50%;
   transform: translateX(-50%);
-}
+} */
 
 .prev-timebtn,
 .next-timebtn {

@@ -188,6 +188,13 @@ function calendarComponent(name, width, height, attackTimeChart, OkCallback, ret
                 <div class="body-time-firstTimechart">
                 </div>
               </div>
+
+              <div class="time-date-secondTimechart">
+                <div class="tittle-secondTime">
+                  <p>3/4</p>
+                </div>
+              </div>
+
               <div class="secondTimechart">
                 <div class="horizol-line-secondTimechart">
                 </div>
@@ -1050,7 +1057,7 @@ function timeChartComponent(calendarComponent) {
             }
           })
 
-          if(orgPoint_Time.isValid() && endPoint_Time.isValid()){
+          if (orgPoint_Time.isValid() && endPoint_Time.isValid()) {
             orgPoint_Time = moment('invalid date');
             endPoint_Time = moment('invalid date');
             clearTimeChart();
@@ -1064,7 +1071,7 @@ function timeChartComponent(calendarComponent) {
           textTop.classList.add("text-hide");
           textBot.classList.add("text-select");
           line.classList.remove("line-hover-non-select");
-          
+
           if (!orgPoint_Time.isValid()) {
             orgPoint_Time = moment(calendarComponent.startDate);
             orgPoint_Time.set({ 'hour': Number(originTime[0]), 'minute': Number(originTime[1]) });
@@ -1247,15 +1254,17 @@ function twoTimechartComponent(calendarComponent) {
         const secondTimechart = twoTimechartComponent.parent.querySelector(".body-time-secondTimechart");
         orgPoint_Time = moment(calendarComponent.startTime);
         endPoint_Time = moment(calendarComponent.endTime);
-        highlightTimeRange(orgPoint_Time, firstTimechart);
-        highlightTimeRange(endPoint_Time, secondTimechart);
+        highlightTimeRange(orgPoint_Time, firstTimechart, 1);
+        highlightTimeRange(endPoint_Time, secondTimechart, 2);
       }
       const time_btnOK = twoTimechartComponent.parent.querySelector(".time_btn_OK");
       if (!orgPoint_Time.isValid() || !endPoint_Time.isValid()) {
         time_btnOK.disabled = true;
       }
-      let timeTittle = calendarComponent.parent.querySelector(".time-date p");
-      timeTittle.textContent = `${(calendarComponent.startDate.get('month') + 1).toString()}/${(calendarComponent.startDate.get('date')).toString()} ~ ${(calendarComponent.endDate.get('month') + 1).toString()}/${(calendarComponent.endDate.get('date')).toString()}`
+      let timeTittleFirst = calendarComponent.parent.querySelector(".time-date p");
+      let timeTittleSecond = calendarComponent.parent.querySelector(".time-date-secondTimechart p")
+      timeTittleFirst.textContent = `${(calendarComponent.startDate.get('month') + 1).toString()}/${(calendarComponent.startDate.get('date')).toString()}`;
+      timeTittleSecond.textContent = `${(calendarComponent.endDate.get('month') + 1).toString()}/${(calendarComponent.endDate.get('date')).toString()}`;
     }
 
     const timeContent = twoTimechartComponent.parent.querySelector(".time-content");
@@ -1424,6 +1433,9 @@ function twoTimechartComponent(calendarComponent) {
       timeList.forEach(_time => {
         const line = _time.querySelector(".line");
         const textBottom = _time.querySelector(".text-bottom-containt");
+        const time = _time.querySelector(".background");
+        time.classList.remove("select");
+        time.classList.add("non-select");
         line.classList.remove("line-select");
         line.classList.remove("line-hover-non-select");
         line.classList.add("line-non-select");
@@ -1431,7 +1443,7 @@ function twoTimechartComponent(calendarComponent) {
       });
     }
     //時間の範囲マーク
-    function highlightTimeRange(time, timechart) {
+    function highlightTimeRange(time, timechart, nameTimechart) {
       clearTimeChart(timechart);
       const timeChart_Unit = timechart.querySelectorAll(".time-unit");
 
@@ -1445,6 +1457,13 @@ function twoTimechartComponent(calendarComponent) {
           line.classList.remove("line-non-select");
           line.classList.add("line-select");
           textBot.classList.add("text-select");
+        }
+        if (nameTimechart == 1) {
+          if (currTime.endOf('minute').isAfter(time.endOf('minute'))) {
+            let timebackground = item.querySelector(".background")
+            timebackground.classList.remove("non-select");
+            timebackground.classList.add("select");
+          }
         }
       });
     }

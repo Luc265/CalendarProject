@@ -1,8 +1,8 @@
 div.time-main-Content-two {
-    top: 18%;
+    top: 13%;
     position: relative;
     width: 80%;
-    height: 200px;
+    height: 230px;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -16,12 +16,29 @@ div.time-main-Content-two {
 }
 
 div.time-main-Content-two .firstTimechart {
-    height: 50%;
+    height: 45%;
     width: 100%;
 }
 
+div.time-main-Content-two .time-date-secondTimechart {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    position: relative;
+    /* padding-top: 10px; */
+    width: auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+div.time-main-Content-two .time-date-secondTimechart .tittle-secondTime {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 div.time-main-Content-two .secondTimechart {
-    height: 50%;
+    height: 45%;
     width: 100%;
 }
 
@@ -43,7 +60,7 @@ div.firstTimechart .horizol-line-firstTimechart {
 
 div.secondTimechart .horizol-line-secondTimechart {
     position: absolute;
-    bottom: 50px;
+    top: calc(55% + 50px);
     height: 1px;
     width: 100%;
     z-index: 1;
@@ -108,9 +125,8 @@ div.time-main-Content-two div.time-unit .non-select {
 div.time-main-Content-two div.time-unit .verical-line-containt {
     position: relative;
     width: 100%;
-    height: calc(100% - 38px);
+    height: calc(100% - 40px);
     margin-top: 20px;
-    /* background-color:bisque; */
 }
 
 div.time-main-Content-two div.time-unit .verical-line-containt .line {
